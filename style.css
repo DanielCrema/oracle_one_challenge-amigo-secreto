@@ -52,7 +52,7 @@ body {
 }
 
 /* Container do Modal */
-#containerWarning {
+#containerModal {
     display: none;
     font-family: "Inter", sans-serif;
     position: absolute;
@@ -62,18 +62,18 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
     z-index: 999;
 }
 
 /* Conteúdo do Modal */
-.warning {
+#warningMessage {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 30px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 400;
     min-height: 200px;
     width: 500px;
