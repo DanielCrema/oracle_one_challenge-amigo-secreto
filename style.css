@@ -15,6 +15,13 @@
     box-sizing: border-box;
 }
 
+*:not(input) {
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+     user-select: none;   
+}
+
 body {
     height: 100vh;
     background-color: var(--color-primary);
@@ -227,4 +234,22 @@ ul {
 
 .button-draw:hover {
     background-color: var(--color-button-hover);
+}
+
+#listaAmigos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.listItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.buttonDestructive {
+    width: 16px;
+    padding: 2px;
+    cursor: pointer;
 }
