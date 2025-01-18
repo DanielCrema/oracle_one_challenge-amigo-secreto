@@ -1,6 +1,7 @@
 //O principal objetivo deste desafio é fortalecer suas habilidades em lógica de programação. Aqui você deverá desenvolver a lógica para resolver o problema.
 
-// Capturando os elementos do modal e do input no HTML
+// Capturando os elementos
+// do modal e do input no HTML
 const backdrop = document.getElementById('backdrop');
 const containerModal = document.getElementById('containerModal');
 const containerWarningMessage = document.getElementById('warningMessage');
@@ -23,13 +24,11 @@ function displayModal(displayCase, alertMessage) {
         warningSubtitleDiv.style.display = 'none';
         containerWarningMessage.style.width = '450px';
         containerWarningMessage.style.minHeight = '150px';
-        containerWarningMessage.style.gap = '0px';
     } else if (displayCase == 'withSubtitle') {
         warningSubtitleDiv.innerHTML = `<p>${alertMessage.subtitle}</p>`;
         warningSubtitleDiv.style.display = 'flex';
         containerWarningMessage.style.width = '500px';
         containerWarningMessage.style.minHeight = '200px';
-        containerWarningMessage.style.gap = '30px';
     }
     backdrop.style.display = 'block';
     containerModal.style.display = 'flex';

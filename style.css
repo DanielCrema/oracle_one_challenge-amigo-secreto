@@ -67,7 +67,7 @@ body {
 }
 
 /* Conteúdo do Modal */
-#warningMessage {
+#containerWarningMessage {
     display: flex;
     flex-direction: column;
     justify-content: center;
