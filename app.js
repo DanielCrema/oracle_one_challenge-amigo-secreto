@@ -13,6 +13,7 @@ const containerWarningMessage = document.getElementById('containerWarningMessage
 const warningTitle = document.getElementById('warningTitle');
 const warningSubtitleDiv = document.getElementById('missingField');
 const warningExitButton = document.getElementById('warningExitButton');
+const containerConfirmButtons = document.getElementById('containerConfirmButtons')
 const inputFriendName = document.getElementById('amigo');
 
 // Lógica para gerenciar o botão de fechar o modal
@@ -23,8 +24,16 @@ warningExitButton.addEventListener('click', () => {
 });
 
 // Função para exibir o modal
-function displayModal(displayCase, alertMessage) {
+function displayModal(displayCase, buttonLayout, alertMessage) {
     warningTitle.innerHTML = alertMessage.title;
+    if (buttonLayout === 'singleButton') {
+        warningExitButton.style.display = 'block';
+        containerConfirmButtons.style.display = 'none';
+    } else if (buttonLayout === 'twoButtons') {
+        warningExitButton.style.display = 'none';
+        containerConfirmButtons.style.display = 'flex';
+    }
+
     if (displayCase == 'noSubtitle') {
         warningSubtitleDiv.style.display = 'none';
         containerWarningMessage.style.width = '450px';
@@ -35,6 +44,7 @@ function displayModal(displayCase, alertMessage) {
         containerWarningMessage.style.width = '500px';
         containerWarningMessage.style.minHeight = '200px';
     }
+
     backdrop.style.display = 'block';
     containerModal.style.display = 'flex';
 }
@@ -75,18 +85,18 @@ function validateFriendName(friendName) {
             if (!verifyNamesInArray(friendsArray, friendName)) {
                 isValid = true;
             } else {
-                displayModal('noSubtitle', {
+                displayModal('noSubtitle', 'singleButton', {
                     title: 'Este nome já foi adicionado à lista',
                 });
             }
         } else {
-            displayModal('withSubtitle', {
+            displayModal('withSubtitle', 'singleButton', {
                 title: `O nome <span style="font-weight: 900">${friendName}</span> não é um nome válido`,
                 subtitle: `Certifique-se de incluir apenas letras nos nomes`
             });
         }
     } else {
-        displayModal('noSubtitle', {
+        displayModal('noSubtitle', 'singleButton', {
             title: 'Por favor, insira um nome',
         });
     }

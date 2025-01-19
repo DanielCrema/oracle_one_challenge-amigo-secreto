@@ -104,8 +104,16 @@ body {
 
 /* Botão para fechar o modal */
 #warningExitButton {
+    display: none;
     width: 130px;
     border-radius: 16px;
+}
+
+#containerConfirmButtons {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
 }
 
 .warningExitButton:hover {
@@ -249,7 +257,8 @@ ul {
 }
 
 .buttonDestructive {
-    width: 16px;
-    padding: 2px;
+    height: 16px;
+    width: 14px;
+    padding: 1px;
     cursor: pointer;
 }
