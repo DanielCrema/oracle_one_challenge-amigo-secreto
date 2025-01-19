@@ -221,7 +221,7 @@ function confirmDrawStart() {
             startDraw();
             backdrop.style.display = 'none';
             containerModal.style.display = 'none';
-        });
+        }, { once: true });
     }
 };
 
@@ -246,7 +246,7 @@ function confirmDrawCancel() {
         endDraw();
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
-    });
+    }, { once: true });
 };
 
 // Configura UI saindo do sorteio
@@ -355,17 +355,21 @@ function generateRandomId() {
 
 // Sortear um amigo aleatório
 function drawFriend() {
-    let randomId = generateRandomId(friendsArray);
-    const friendName = friendsArray[randomId].friendName;
-    displayResult(friendName);
+    const randomId = generateRandomId(friendsArray);
     if (randomId !== false) {
+        const friendName = friendsArray[randomId].friendName;
+        displayResult(friendName);
+    } else {
+        setupEndGameEnvironment();
     }
+    // console.log('friendsArray = ', friendsArray);
+    // console.log('sortedIds = ', sortedIds);
 }
 
 
 /**
  * Lógica para gerenciar os processos
- *  de UI/UX durante e após o sorteio
+ *  de UI/UX durante o sorteio
 */
 
 // Gerenciar o botão de exibir e ocultar o nome do amigo
@@ -405,3 +409,73 @@ function displayResult(friendName) {
     });
 }
 
+function setupEndGameEnvironment() {
+    // Esconde o container de nome do modal
+    const containerFriendName = document.getElementById('containerFriendName');
+    containerFriendName.style.display = 'none';
+    
+    // Configura o botão de iniciar novo sorteio
+    const buttonCancelDraw = document.querySelector('.button-cancel-draw');
+    buttonCancelDraw.removeAttribute('onclick');
+    buttonCancelDraw.setAttribute('onclick', 'confirmRestart()');
+    const p = buttonCancelDraw.querySelector('p');
+    p.innerHTML = 'Novo Sorteio';
+}
+
+
+/**
+ * Lógica para gerenciar os processos
+ *  de UI/UX após o sorteio
+*/
+
+// 
+function confirmRestart() {
+    displayModal('withSubtitle', 'twoButtons', {
+        title: `Tem certeza que quer reiniciar?`,
+        subtitle: `Os nomes do sorteio anterior serão perdidos`
+    });
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.addEventListener('click', () => {
+        restart();
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+    }, { once: true });
+}
+
+// Limpa tudo para começar um novo sorteio
+function restart() {
+    // Limpa os arrays
+    friendsArray = [];
+    sortedIds = [];
+
+    // Reabilita o input e o botão de adicionar
+    toggleDisplay('input', 'enable');
+    toggleDisplay('addButton', 'enable');
+
+    // Limpa a lista de amigos
+    const listaAmigos = document.getElementById('listaAmigos');
+    listaAmigos.innerHTML = '';
+    const tituloListaAmigos = document.getElementById('tituloListaAmigos');
+    tituloListaAmigos.style.display = 'none';
+
+    // Reinicializa o botão de cancelar para
+    // sua funcionalidade original
+    toggleDisplay('buttonCancelDraw', 'disable');
+    const buttonCancelDraw = document.querySelector('.button-cancel-draw');
+    buttonCancelDraw.setAttribute('onclick', 'confirmDrawCancel()');
+    const buttonCancelDrawParagraph = buttonCancelDraw.querySelector('p');
+    buttonCancelDrawParagraph.innerHTML = 'Cancelar Sorteio';
+
+    // Reinicializa o botão de Iniciar Sorteio para sua funcionalidade original
+    toggleDisplay('buttonDraw', 'disable');
+    const buttonDraw = document.querySelector('.button-draw-action');
+    buttonDraw.setAttribute('onclick', 'confirmDrawStart()');
+    const buttonDrawParagraph = buttonDraw.querySelector('p');
+    buttonDrawParagraph.innerHTML = 'Iniciar Sorteio';
+}
+
+// Reinicia o sorteio atual
+function drawAgain() {
+    // Limpa o array do sorteio
+    sortedIds = [];
+}
