@@ -1,5 +1,11 @@
 //O principal objetivo deste desafio é fortalecer suas habilidades em lógica de programação. Aqui você deverá desenvolver a lógica para resolver o problema.
 
+
+/**
+ * 
+ * Lógica do modal
+ * 
+**/
 // Capturando os elementos
 // do modal e do input no HTML
 const backdrop = document.getElementById('backdrop');
@@ -34,8 +40,11 @@ function displayModal(displayCase, alertMessage) {
     containerModal.style.display = 'flex';
 }
 
-// Lógica para gerenciar a inclusão de nomes na lista
-// 
+/**
+ * 
+ * Lógica para gerenciar a inclusão de nomes na lista
+ * 
+**/
 const friendsArray = [];
 let currentFriendId = 0;
 
@@ -83,4 +92,34 @@ function validateFriendName(friendName) {
     }
 
     return isValid
+}
+
+// Função 'onclick' do botão de adicionar nome
+function addFriend() {
+    const friendName = inputFriendName.value;
+    if (validateFriendName(friendName)) {
+        const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
+        const friendItem = {
+            id: currentFriendId,
+            friendName: normalizedFriendName
+        }
+        addToList(friendItem);
+    }
+}
+
+// Função para adicionar nomes na lista de amigos
+function addToList(friendItem) {
+    friendsArray.push(friendItem);
+    const friendsList = document.getElementById('listaAmigos');
+    const li = friendsList.appendChild(document.createElement("li"));
+    li.classList.add('listItem');
+    li.setAttribute("id", `item-${friendItem.id}`);
+    li.innerHTML = `
+        <img class="buttonDestructive" src="/assets/red-trash-can-icon.png" alt="">
+        <p>${friendItem.friendName}</p>
+    `;
+    currentFriendId++
+    inputFriendName.value = '';
+    console.log("Adicionado com sucesso");
+    console.log(friendsArray);
 }
