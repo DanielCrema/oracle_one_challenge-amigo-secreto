@@ -4,7 +4,7 @@
 // do modal e do input no HTML
 const backdrop = document.getElementById('backdrop');
 const containerModal = document.getElementById('containerModal');
-const containerWarningMessage = document.getElementById('warningMessage');
+const containerWarningMessage = document.getElementById('containerWarningMessage');
 const warningTitle = document.getElementById('warningTitle');
 const warningSubtitleDiv = document.getElementById('missingField');
 const warningExitButton = document.getElementById('warningExitButton');
@@ -32,4 +32,55 @@ function displayModal(displayCase, alertMessage) {
     }
     backdrop.style.display = 'block';
     containerModal.style.display = 'flex';
+}
+
+// Lógica para gerenciar a inclusão de nomes na lista
+// 
+const friendsArray = [];
+let currentFriendId = 0;
+
+// Função para validar o nome
+function validateFriendName(friendName) {
+    // Função para verificar se o nome sendo adicionado já existe na lista
+    function verifyNamesInArray(arr, nome) {
+        function extractNamesFromArrayInnerObjects(arr) {
+            const namesArray = [];
+            arr.forEach((element) => {
+                namesArray.push(element.friendName);
+            })
+            return namesArray
+        };
+
+        if (typeof arr[0] == 'object') {
+            arr = extractNamesFromArrayInnerObjects(arr);
+        }
+        const found = arr.find((element) => element.toLowerCase() == nome.toLowerCase());
+
+        return found
+    }
+
+    let isValid = false;
+    if (friendName !== '') {
+        const validationRegex = /^[a-z]*$/i;
+        if (validationRegex.test(friendName)) {
+            if (!verifyNamesInArray(friendsArray, friendName)) {
+                isValid = true;
+            } else {
+                displayModal('noSubtitle', {
+                    title: 'Este nome já foi adicionado à lista',
+                });
+            }
+        } else {
+            displayModal('withSubtitle', {
+                title: `O nome <span style="font-weight: 900">${friendName}</span> não é um nome válido`,
+                subtitle: `Certifique-se de incluir apenas letras nos nomes`
+            });
+        }
+    } else {
+        displayModal('noSubtitle', {
+            title: 'Por favor, insira um nome',
+        });
+    }
+
+    return isValid
 }
