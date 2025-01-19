@@ -1,10 +1,12 @@
 //O principal objetivo deste desafio é fortalecer suas habilidades em lógica de programação. Aqui você deverá desenvolver a lógica para resolver o problema.
 
+
 /**
  * 
- * Lógica do modal
+ * Lógicas globais do modal
  * 
 **/
+
 // Capturando os elementos
 // do modal e do input no HTML
 const backdrop = document.getElementById('backdrop');
@@ -55,12 +57,14 @@ function displayModal(displayCase, buttonLayout, alertMessage) {
     containerModal.style.display = 'flex';
 }
 
+
 /**
  * 
  * Lógica para gerenciar a inclusão
  * e exclusão de nomes na lista
  * 
 **/
+
 let friendsArray = [];
 let currentFriendId = 0;
 
@@ -143,7 +147,7 @@ function addToList(friendItem) {
     imgRightArrow.setAttribute("src", "/assets/right-arrow.png");
     imgRightArrow.setAttribute("alt", `${friendItem.friendName}`);
 
-    // Cria o botão destrutivo
+    // Cria e configura o botão destrutivo
     const imgButtonDestructive = li.appendChild(document.createElement("img"));
     imgButtonDestructive.classList.add('buttonDestructive');
     imgButtonDestructive.setAttribute("src", "/assets/red-trash-can-icon.png");
@@ -161,6 +165,7 @@ function addToList(friendItem) {
     console.log(friendsArray);
 }
 
+// Função para apagar um nome da lista
 function deleteItem(id) {
     if (friendsArray.length === 1) {
         const tituloListaAmigos = document.getElementById('tituloListaAmigos');
@@ -183,22 +188,23 @@ function deleteItem(id) {
     });
 }
 
-/**
- * Adicionar nome com Enter
-*/
+// Adicionar nome com Enter
 inputFriendName.addEventListener('keyup', (e) => {
     if (inputFriendName.value !== '' && e.key === 'Enter') {
         addFriend();
     }
 });
 
+
 /**
  * 
  * Lógica para gerenciar os
- * processos do sorteio
+ * processos de UI/UX do sorteio
  * 
 **/
+
 let sortedIds = [];
+// UI para confirmar o início do sorteio
 function confirmDrawStart() {
     if (friendsArray.length < 3) {
         displayModal('withSubtitle', 'singleButton', {
@@ -219,6 +225,7 @@ function confirmDrawStart() {
     }
 };
 
+// Configura UI do sorteio
 function startDraw() {
     toggleDisplay('input', 'disable');
     toggleDisplay('addButton', 'disable');
@@ -228,6 +235,7 @@ function startDraw() {
     toggleDisplay('buttonCancelDraw', 'enable');
 };
 
+// UI para confirmar cancelamento do sorteio
 function confirmDrawCancel() {
     displayModal('withSubtitle', 'twoButtons', {
         title: `Tem certeza que deseja cancelar?`,
@@ -241,6 +249,7 @@ function confirmDrawCancel() {
     });
 };
 
+// Configura UI saindo do sorteio
 function endDraw() {
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
@@ -250,6 +259,7 @@ function endDraw() {
     toggleDisplay('buttonCancelDraw', 'disable');
 };
 
+// Lógicas para manipular o DOM iniciando e saindo do sorteio
 function toggleDisplay(element, parameter) {
     switch (element) {
         case 'input':
@@ -322,6 +332,12 @@ function toggleDisplay(element, parameter) {
     }
 }
 
+
+/**
+ * Lógicas do Sorteio
+*/
+
+// Gerador de IDs aleatórios
 function generateRandomId() {
     let randomId = Math.floor(Math.random() * friendsArray.length);
 
@@ -337,6 +353,7 @@ function generateRandomId() {
     }
 }
 
+// Sortear um amigo aleatório
 function drawFriend() {
     let randomId = generateRandomId(friendsArray);
     const friendName = friendsArray[randomId].friendName;
@@ -344,6 +361,12 @@ function drawFriend() {
     if (randomId !== false) {
     }
 }
+
+
+/**
+ * Lógica para gerenciar os processos
+ *  de UI/UX durante e após o sorteio
+*/
 
 // Gerenciar o botão de exibir e ocultar o nome do amigo
 let friendShown = false;
@@ -365,6 +388,7 @@ function toggleFriendName() {
     }
 }
 
+// Exibir o modal com o nome do amigo
 function displayResult(friendName) {
     // Mudar o <p> do modal para o nome do amigo
     // e reinicializar o layout
@@ -380,3 +404,4 @@ function displayResult(friendName) {
         subtitle: `Certifique-se que nenhum xereta está olhando`
     });
 }
+
