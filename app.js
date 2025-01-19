@@ -20,16 +20,23 @@ const cancelButton = document.getElementById('cancelButton');
 const inputFriendName = document.getElementById('amigo');
 
 // Lógica para gerenciar os botões de fechar o modal
-warningExitButton.addEventListener('click', () => {
-    backdrop.style.display = 'none';
-    containerModal.style.display = 'none';
-    inputFriendName.value = '';
-});
-cancelButton.addEventListener('click', () => {
-    backdrop.style.display = 'none';
-    containerModal.style.display = 'none';
-    inputFriendName.value = '';
-});
+function setWarningExitButtonEventListener() {
+    warningExitButton.addEventListener('click', () => {
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+        inputFriendName.value = '';
+    });
+}
+function setCancelButtonEventListener() {
+    console.log("chamou aqui")
+    cancelButton.addEventListener('click', () => {
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+        inputFriendName.value = '';
+    });
+}
+setWarningExitButtonEventListener();
+setCancelButtonEventListener();
 
 // Função para exibir o modal
 function displayModal(displayCase, buttonLayout, alertMessage) {
@@ -43,10 +50,12 @@ function displayModal(displayCase, buttonLayout, alertMessage) {
     }
 
     if (displayCase == 'noSubtitle') {
+        warningTitle.style.fontWeight = 400;
         warningSubtitleDiv.style.display = 'none';
         containerWarningMessage.style.width = '450px';
         containerWarningMessage.style.minHeight = '150px';
     } else if (displayCase == 'withSubtitle') {
+        warningTitle.style.fontWeight = '700';
         warningSubtitleDiv.innerHTML = `<p>${alertMessage.subtitle}</p>`;
         warningSubtitleDiv.style.display = 'flex';
         containerWarningMessage.style.width = '500px';
@@ -101,7 +110,7 @@ function validateFriendName(friendName) {
             }
         } else {
             displayModal('withSubtitle', 'singleButton', {
-                title: `O nome <span style="font-weight: 900">${friendName}</span> não é um nome válido`,
+                title: `O nome <span style="font-weight: 900">"${friendName}"</span> não é um nome válido`,
                 subtitle: `Certifique-se de incluir apenas letras nos nomes`
             });
         }
@@ -243,14 +252,15 @@ function confirmDrawCancel() {
     });
     const confirmButton = document.getElementById('confirmButton');
     confirmButton.addEventListener('click', () => {
-        endDraw();
+        cancelDraw();
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
     }, { once: true });
 };
 
 // Configura UI saindo do sorteio
-function endDraw() {
+function cancelDraw() {
+    sortedIds = [];
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
     toggleDisplay('buttonDestructive', 'enable');
@@ -420,7 +430,7 @@ function setupEndGameEnvironment() {
         containerFriendName.style.display = 'none';
 
         // Apresenta a mensagem de fim de jogo
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 400));
         displayModal('withSubtitle', 'singleButton', {
             title: `Este era o último amigo`,
             subtitle: `Você pode sortear novamente ou iniciar um novo sorteio nos botões ao fim da página`
@@ -431,8 +441,15 @@ function setupEndGameEnvironment() {
             const buttonCancelDraw = document.querySelector('.button-cancel-draw');
             buttonCancelDraw.removeAttribute('onclick');
             buttonCancelDraw.setAttribute('onclick', 'confirmRestart()');
-            const p = buttonCancelDraw.querySelector('p');
-            p.innerHTML = 'Novo Sorteio';
+            const buttonCancelDrawParagraph = buttonCancelDraw.querySelector('p');
+            buttonCancelDrawParagraph.innerHTML = 'Novo Sorteio';
+
+            // Configura o botão de reiniciar sorteio atual
+            const buttonDraw = document.querySelector('.button-draw-action');
+            buttonDraw.removeAttribute('onclick');
+            buttonDraw.setAttribute('onclick', 'confirmDrawAgain()');
+            const buttonDrawParagraph = buttonDraw.querySelector('p');
+            buttonDrawParagraph.innerHTML = 'Repetir Sorteio';
         }, { once: true });
     }, { once: true });
 }
@@ -443,18 +460,84 @@ function setupEndGameEnvironment() {
  *  de UI/UX após o sorteio
 */
 
-// 
+// Gerencia os listeners dos diálogos de confirmação
+function manageConfirmations(functionToCall, message) {
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+    const warningExitButton = document.getElementById('warningExitButton');
+
+    // Limpador de listeners
+    function clearListeners() {
+        confirmButton.removeEventListener('click', handleConfirm);
+        cancelButton.removeEventListener('click', handleCancel);
+    }
+
+    // Define a função do listener de confirmação
+    async function handleConfirm() {
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+        clearListeners();
+        if (message) {
+            // Apresenta uma mensagem informativa
+            await new Promise(resolve => setTimeout(resolve, 250));
+            displayModal('noSubtitle', 'singleButton', {
+                title: `${message}`,
+            });
+            warningExitButton.addEventListener('click', () => {
+                functionToCall();
+            }, { once: true })
+        } else {
+            functionToCall();
+        }
+    }
+
+    // Define a função do listener de cancelamento
+    function handleCancel() {
+        console.log("chamou handle cancel")
+        clearListeners();
+    }
+
+    // Attach the listeners
+    confirmButton.addEventListener('click', handleConfirm, { once: true });
+    cancelButton.addEventListener('click', handleCancel, { once: true });
+}
+
+// Gerencia a UX de iniciar novo sorteio
 function confirmRestart() {
     displayModal('withSubtitle', 'twoButtons', {
         title: `Tem certeza que quer reiniciar?`,
-        subtitle: `Os nomes do sorteio anterior serão perdidos`
+        subtitle: `Os nomes do sorteio atual serão perdidos`
     });
-    const confirmButton = document.getElementById('confirmButton');
-    confirmButton.addEventListener('click', () => {
-        restart();
-        backdrop.style.display = 'none';
-        containerModal.style.display = 'none';
-    }, { once: true });
+
+    manageConfirmations(restart);
+}
+
+// Gerencia a UX de reiniciar sorteio atual
+function confirmDrawAgain() {
+    displayModal('withSubtitle', 'twoButtons', {
+        title: `Sortear novamente?`,
+        subtitle: `Esta ação reinicia o sorteio atual`
+    });
+
+    manageConfirmations(drawAgain, 'Você pode modificar a lista de nomes antes de recomeçar');
+}
+
+// Reinicializa os botões inferiores após a confirmação
+function resetDrawButtons() {
+    // Reinicializa o botão de cancelar para
+    // sua funcionalidade original
+    toggleDisplay('buttonCancelDraw', 'disable');
+    const buttonCancelDraw = document.querySelector('.button-cancel-draw');
+    buttonCancelDraw.setAttribute('onclick', 'confirmDrawCancel()');
+    const buttonCancelDrawParagraph = buttonCancelDraw.querySelector('p');
+    buttonCancelDrawParagraph.innerHTML = 'Cancelar Sorteio';
+
+    // Reinicializa o botão de Iniciar Sorteio para sua funcionalidade original
+    toggleDisplay('buttonDraw', 'disable');
+    const buttonDraw = document.querySelector('.button-draw-action');
+    buttonDraw.setAttribute('onclick', 'confirmDrawStart()');
+    const buttonDrawParagraph = buttonDraw.querySelector('p');
+    buttonDrawParagraph.innerHTML = 'Iniciar Sorteio';
 }
 
 // Limpa tudo para começar um novo sorteio
@@ -473,24 +556,24 @@ function restart() {
     const tituloListaAmigos = document.getElementById('tituloListaAmigos');
     tituloListaAmigos.style.display = 'none';
 
-    // Reinicializa o botão de cancelar para
-    // sua funcionalidade original
-    toggleDisplay('buttonCancelDraw', 'disable');
-    const buttonCancelDraw = document.querySelector('.button-cancel-draw');
-    buttonCancelDraw.setAttribute('onclick', 'confirmDrawCancel()');
-    const buttonCancelDrawParagraph = buttonCancelDraw.querySelector('p');
-    buttonCancelDrawParagraph.innerHTML = 'Cancelar Sorteio';
-
-    // Reinicializa o botão de Iniciar Sorteio para sua funcionalidade original
-    toggleDisplay('buttonDraw', 'disable');
-    const buttonDraw = document.querySelector('.button-draw-action');
-    buttonDraw.setAttribute('onclick', 'confirmDrawStart()');
-    const buttonDrawParagraph = buttonDraw.querySelector('p');
-    buttonDrawParagraph.innerHTML = 'Iniciar Sorteio';
+    // Reinicializa os botões inferiores
+    resetDrawButtons();
 }
 
 // Reinicia o sorteio atual
 function drawAgain() {
     // Limpa o array do sorteio
     sortedIds = [];
+
+    // Reabilita o input e o botão de adicionar
+    toggleDisplay('input', 'enable');
+    toggleDisplay('addButton', 'enable');
+
+    // Reabilita os botões destrutivos e desabilita as setas
+    toggleDisplay('buttonDestructive', 'enable');
+    toggleDisplay('iconRightArrow', 'disable');
+
+    // Reinicializa os botões inferiores
+    resetDrawButtons();
+    console.log(friendsArray)
 }

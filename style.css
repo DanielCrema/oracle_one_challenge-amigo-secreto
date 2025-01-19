@@ -92,6 +92,7 @@ body {
 
 /* Título da mensagem */
 #warningTitle {
+    text-align: center;
     font-weight: 700;
 }
 
@@ -137,7 +138,12 @@ body {
     gap: 40px;
 }
 
-.warningExitButton:hover {
+#warningExitButton {
+    height: 46px;
+    padding: 0px;
+}
+
+#warningExitButton:hover {
     cursor: pointer;
     opacity: 0.9;
     background: linear-gradient(360deg, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
