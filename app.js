@@ -13,11 +13,17 @@ const containerWarningMessage = document.getElementById('containerWarningMessage
 const warningTitle = document.getElementById('warningTitle');
 const warningSubtitleDiv = document.getElementById('missingField');
 const warningExitButton = document.getElementById('warningExitButton');
-const containerConfirmButtons = document.getElementById('containerConfirmButtons')
+const containerConfirmButtons = document.getElementById('containerConfirmButtons');
+const cancelButton = document.getElementById('cancelButton');
 const inputFriendName = document.getElementById('amigo');
 
-// Lógica para gerenciar o botão de fechar o modal
+// Lógica para gerenciar os botões de fechar o modal
 warningExitButton.addEventListener('click', () => {
+    backdrop.style.display = 'none';
+    containerModal.style.display = 'none';
+    inputFriendName.value = '';
+});
+cancelButton.addEventListener('click', () => {
     backdrop.style.display = 'none';
     containerModal.style.display = 'none';
     inputFriendName.value = '';
@@ -160,7 +166,7 @@ function deleteItem(id) {
 
 /**
  * Adicionar nome com Enter
- */
+*/
 inputFriendName.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
         addFriend();

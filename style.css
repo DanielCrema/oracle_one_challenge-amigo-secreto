@@ -109,6 +109,7 @@ body {
     border-radius: 16px;
 }
 
+/* Container dos botões de confirmação */
 #containerConfirmButtons {
     display: none;
     justify-content: center;
@@ -117,6 +118,18 @@ body {
 }
 
 .warningExitButton:hover {
+    cursor: pointer;
+    opacity: 0.9;
+    background: linear-gradient(360deg, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
+}
+
+#confirmButton:hover {
+    cursor: pointer;
+    opacity: 0.9;
+    background: linear-gradient(360deg, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
+}
+
+#cancelButton:hover {
     cursor: pointer;
     opacity: 0.9;
     background: linear-gradient(360deg, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
