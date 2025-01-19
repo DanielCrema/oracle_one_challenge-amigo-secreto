@@ -28,7 +28,6 @@ function setWarningExitButtonEventListener() {
     });
 }
 function setCancelButtonEventListener() {
-    console.log("chamou aqui")
     cancelButton.addEventListener('click', () => {
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
@@ -170,8 +169,7 @@ function addToList(friendItem) {
     p.innerHTML = friendItem.friendName;
     currentFriendId++
     inputFriendName.value = '';
-    console.log("Adicionado com sucesso");
-    console.log(friendsArray);
+
 }
 
 // Função para apagar um nome da lista
@@ -493,7 +491,6 @@ function manageConfirmations(functionToCall, message) {
 
     // Define a função do listener de cancelamento
     function handleCancel() {
-        console.log("chamou handle cancel")
         clearListeners();
     }
 
@@ -575,5 +572,4 @@ function drawAgain() {
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
-    console.log(friendsArray)
 }
