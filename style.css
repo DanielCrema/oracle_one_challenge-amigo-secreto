@@ -91,7 +91,7 @@ body {
 
 /* Mensagem do Erro */
 #missingField {
-    max-width: 250px;
+    max-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -184,7 +184,9 @@ body {
 }
 
 .button-container {
-    width: 300px;
+    display: flex;
+    gap: 30px;
+    width: fit-content;
     justify-content: center;
 }
 
@@ -242,15 +244,22 @@ ul {
 .button-draw {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-width: 230px;
     width: 100%;
-    padding: 10px 40px;
+    padding: 10px;
     color: var(--color-white);
     background-color: var(--color-button);
     font-size: 16px;
 }
 
+.button-cancel-draw {
+    display: none;
+}
+
 .button-draw img {
-    margin-right: 40px;
+    width: 30px;
 }
 
 .button-draw:hover {
@@ -274,6 +283,12 @@ ul {
     width: 14px;
     padding: 1px;
     cursor: pointer;
+}
+
+.iconRightArrow {
+    display: none;
+    width: 16px;
+    padding: 1px;
 }
 
 #containerListaAmigos {

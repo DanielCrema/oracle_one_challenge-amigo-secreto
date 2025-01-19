@@ -112,10 +112,6 @@ function validateFriendName(friendName) {
 
 // Função 'onclick' do botão de adicionar nome
 function addFriend() {
-    if (friendsArray.length === 0) {
-        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
-        tituloListaAmigos.style.display = 'block';
-    }
     const friendName = inputFriendName.value;
     if (validateFriendName(friendName)) {
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
@@ -129,20 +125,35 @@ function addFriend() {
 
 // Função para adicionar nomes na lista de amigos
 function addToList(friendItem) {
+    if (friendsArray.length === 0) {
+        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
+        tituloListaAmigos.style.display = 'block';
+    }
     friendsArray.push(friendItem);
+
+    // Lógica de manipulação do DOM
     const friendsList = document.getElementById('listaAmigos');
     const li = friendsList.appendChild(document.createElement("li"));
     li.classList.add('listItem');
     li.setAttribute("id", `item-${friendItem.id}`);
-    const img = li.appendChild(document.createElement("img"));
-    img.classList.add('buttonDestructive');
-    img.setAttribute("src", "/assets/red-trash-can-icon.png");
-    img.setAttribute("alt", `Excluir ${friendItem.friendName}`);
+
+    // Cria ícone cosmético
+    const imgRightArrow = li.appendChild(document.createElement("img"));
+    imgRightArrow.classList.add('iconRightArrow');
+    imgRightArrow.setAttribute("src", "/assets/right-arrow.png");
+    imgRightArrow.setAttribute("alt", `${friendItem.friendName}`);
+
+    // Cria o botão destrutivo
+    const imgButtonDestructive = li.appendChild(document.createElement("img"));
+    imgButtonDestructive.classList.add('buttonDestructive');
+    imgButtonDestructive.setAttribute("src", "/assets/red-trash-can-icon.png");
+    imgButtonDestructive.setAttribute("alt", `Excluir ${friendItem.friendName}`);
     const p = li.appendChild(document.createElement("p"));
-    img.addEventListener('click', () => {
+    imgButtonDestructive.addEventListener('click', () => {
         const itemId = li.id.match(/\d/)[0]
         deleteItem(itemId);
     })
+
     p.innerHTML = friendItem.friendName;
     currentFriendId++
     inputFriendName.value = '';
@@ -156,12 +167,12 @@ function deleteItem(id) {
         tituloListaAmigos.style.display = 'none';
     }
     const newArray = friendsArray
-    .filter((friendItem) => friendItem.id !== parseInt(id))
-    .map((friendItem, index) => {
-        // Update ids for the remaining items
-        friendItem.id = index;
-        return friendItem;
-    });
+        .filter((friendItem) => friendItem.id !== parseInt(id))
+        .map((friendItem, index) => {
+            // Update ids for the remaining items
+            friendItem.id = index;
+            return friendItem;
+        });
 
     const friendsList = document.getElementById('listaAmigos');
     friendsList.innerHTML = '';
@@ -176,7 +187,136 @@ function deleteItem(id) {
  * Adicionar nome com Enter
 */
 inputFriendName.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
+    if (inputFriendName.value !== '' && e.key === 'Enter') {
         addFriend();
     }
 });
+
+/**
+ * 
+ * Lógica para gerenciar os
+ * processos do sorteio
+ * 
+**/
+function confirmDrawStart() {
+    if (friendsArray.length < 3) {
+        displayModal('withSubtitle', 'singleButton', {
+            title: `Impossível realizar sorteio`,
+            subtitle: `Certifique-se de incluir pelo menos <span style="font-weight: 700">3</span> pessoas`
+        });
+    } else {
+        displayModal('withSubtitle', 'twoButtons', {
+            title: `O sorteio irá começar`,
+            subtitle: `Após iniciar o sorteio não será possível adicionar ou remover nomes da lista`
+        });
+        const confirmButton = document.getElementById('confirmButton');
+        confirmButton.addEventListener('click', () => {
+            startDraw();
+            backdrop.style.display = 'none';
+            containerModal.style.display = 'none';
+        });
+    }
+};
+
+function startDraw() {
+    toggleDisplay('input', 'disable');
+    toggleDisplay('addButton', 'disable');
+    toggleDisplay('buttonDestructive', 'disable');
+    toggleDisplay('iconRightArrow', 'enable');
+    toggleDisplay('buttonDraw', 'enable');
+    toggleDisplay('buttonCancelDraw', 'enable');
+};
+
+function confirmDrawCancel() {
+    displayModal('withSubtitle', 'twoButtons', {
+        title: `Tem certeza que deseja cancelar?`,
+        subtitle: `Clicando em confirmar você terá que recomeçar o sorteio do início`
+    });
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.addEventListener('click', () => {
+        cancelDraw();
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+    });
+};
+
+function cancelDraw() {
+    toggleDisplay('input', 'enable');
+    toggleDisplay('addButton', 'enable');
+    toggleDisplay('buttonDestructive', 'enable');
+    toggleDisplay('iconRightArrow', 'disable');
+    toggleDisplay('buttonDraw', 'disable');
+    toggleDisplay('buttonCancelDraw', 'disable');
+};
+
+function toggleDisplay(element, parameter) {
+    switch (element) {
+        case 'input':
+            if (parameter === 'disable') {
+                inputFriendName.disabled = true;
+                inputFriendName.style.caretColor = 'transparent';
+                inputFriendName.removeAttribute('placeholder');
+                inputFriendName.style.backgroundColor = 'var(--color-tertiary)';
+            } else if (parameter === 'enable') {
+                inputFriendName.disabled = false;
+                inputFriendName.style.caretColor = 'auto';
+                inputFriendName.setAttribute('placeholder', 'Digite um nome');
+                inputFriendName.style.backgroundColor = '#FFF';
+            }
+            break;
+        case 'addButton':
+            const addButton = document.querySelector('.button-add');
+            if (parameter === 'disable') {
+                addButton.removeAttribute('onclick');
+            } else if (parameter === 'enable') {
+                addButton.setAttribute('onclick', 'addFriend()');
+            }
+            break;
+        case 'buttonDraw':
+            const buttonDraw = document.querySelector('.button-draw-action');
+            if (parameter === 'disable') {
+                buttonDraw.setAttribute('onclick', 'confirmDrawStart()');
+                const p = buttonDraw.querySelector('p');
+                p.innerHTML = 'Iniciar Sorteio';
+            } else if (parameter === 'enable') {
+                buttonDraw.setAttribute('onclick', 'drawFriend()');
+                const p = buttonDraw.querySelector('p');
+                p.innerHTML = 'Sortear Nome';
+            }
+            break;
+        case 'buttonCancelDraw':
+            const cancelDrawButton = document.querySelector('.button-cancel-draw');
+            if (parameter === 'disable') {
+                cancelDrawButton.style.display = 'none';
+            } else if (parameter === 'enable') {
+                cancelDrawButton.style.display = 'flex';
+            }
+            break;
+        case 'buttonDestructive':
+            if (parameter === 'disable') {
+                const buttonDestructive = document.querySelectorAll('.buttonDestructive');
+                buttonDestructive.forEach((button) => {
+                    button.style.display = 'none';
+                })
+            } else if (parameter === 'enable') {
+                const buttonDestructive = document.querySelectorAll('.buttonDestructive');
+                buttonDestructive.forEach((button) => {
+                    button.style.display = 'block';
+                })
+            }
+            break;
+        case 'iconRightArrow':
+            if (parameter === 'disable') {
+                const iconRightArrow = document.querySelectorAll('.iconRightArrow');
+                iconRightArrow.forEach((icon) => {
+                    icon.style.display = 'none';
+                })
+            } else if (parameter === 'enable') {
+                const iconRightArrow = document.querySelectorAll('.iconRightArrow');
+                iconRightArrow.forEach((icon) => {
+                    icon.style.display = 'block';
+                })
+            }
+            break;
+    }
+}

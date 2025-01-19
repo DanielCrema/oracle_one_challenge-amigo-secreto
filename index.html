@@ -48,10 +48,14 @@
                 <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
            </div>
 
-            <div class="button-container">
-                <button class="button-draw" onclick="drawFriend()" aria-label="Sortear amigo secreto">
+           <div class="button-container">
+                <button class="button-draw button-cancel-draw" onclick="confirmDrawCancel()">
+                    <img src="assets/stop_circle_outline.png" alt="Ícone para sortear">
+                    <p>Cancelar Sorteio</p>
+                </button>
+                <button class="button-draw button-draw-action" onclick="confirmDrawStart()" aria-label="Sortear amigo secreto">
                     <img src="assets/play_circle_outline.png" alt="Ícone para sortear">
-                    Iniciar Sorteio
+                    <p>Iniciar Sorteio</p>
                 </button>
             </div>
         </section>
