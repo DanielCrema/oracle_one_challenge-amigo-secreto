@@ -42,10 +42,11 @@ function displayModal(displayCase, alertMessage) {
 
 /**
  * 
- * Lógica para gerenciar a inclusão de nomes na lista
+ * Lógica para gerenciar a inclusão
+ * e exclusão de nomes na lista
  * 
 **/
-const friendsArray = [];
+let friendsArray = [];
 let currentFriendId = 0;
 
 // Função para validar o nome
@@ -114,12 +115,36 @@ function addToList(friendItem) {
     const li = friendsList.appendChild(document.createElement("li"));
     li.classList.add('listItem');
     li.setAttribute("id", `item-${friendItem.id}`);
-    li.innerHTML = `
-        <img class="buttonDestructive" src="/assets/red-trash-can-icon.png" alt="">
-        <p>${friendItem.friendName}</p>
-    `;
+    const img = li.appendChild(document.createElement("img"));
+    img.classList.add('buttonDestructive');
+    img.setAttribute("src", "/assets/red-trash-can-icon.png");
+    img.setAttribute("alt", `Excluir ${friendItem.friendName}`);
+    const p = li.appendChild(document.createElement("p"));
+    img.addEventListener('click', () => {
+        const itemId = li.id.match(/\d/)[0]
+        deleteItem(itemId);
+    })
+    p.innerHTML = friendItem.friendName;
     currentFriendId++
     inputFriendName.value = '';
     console.log("Adicionado com sucesso");
     console.log(friendsArray);
+}
+
+function deleteItem(id) {
+    const newArray = friendsArray
+    .filter((friendItem) => friendItem.id !== parseInt(id))
+    .map((friendItem, index) => {
+        // Update ids for the remaining items
+        friendItem.id = index;
+        return friendItem;
+    });
+
+    const friendsList = document.getElementById('listaAmigos');
+    friendsList.innerHTML = '';
+    friendsArray = [];
+    currentFriendId = 0
+    newArray.forEach((friendItem) => {
+        addToList(friendItem);
+    });
 }
