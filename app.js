@@ -1,6 +1,5 @@
 //O principal objetivo deste desafio é fortalecer suas habilidades em lógica de programação. Aqui você deverá desenvolver a lógica para resolver o problema.
 
-
 /**
  * 
  * Lógica do modal
@@ -148,3 +147,12 @@ function deleteItem(id) {
         addToList(friendItem);
     });
 }
+
+/**
+ * Adicionar nome com Enter
+ */
+inputFriendName.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
+        addFriend();
+    }
+});
