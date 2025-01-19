@@ -244,6 +244,8 @@ function startDraw() {
 
 // UI para confirmar cancelamento do sorteio
 function confirmDrawCancel() {
+    const containerFriendName = document.getElementById('containerFriendName');
+    containerFriendName.style.display = 'none';
     displayModal('withSubtitle', 'twoButtons', {
         title: `Tem certeza que deseja cancelar?`,
         subtitle: `Clicando em confirmar você terá que recomeçar o sorteio do início`
