@@ -75,6 +75,7 @@ body {
 
 /* Conteúdo do Modal */
 #containerWarningMessage {
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -89,6 +90,11 @@ body {
     outline: 2px solid #444;
 }
 
+/* Título da mensagem */
+#warningTitle {
+    font-weight: 700;
+}
+
 /* Mensagem do Erro */
 #missingField {
     max-width: 300px;
@@ -100,6 +106,20 @@ body {
     gap: 3px;
     font-size: 18px;
     font-weight: 400;
+}
+
+/* Container do exibidor de nome do amigo */
+#containerFriendName {
+    display: none;
+    flex-direction: column;
+    place-content: center;
+}
+
+/* Botão para exibir o nome do amigo */
+#displayFriendNameButton {
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px
 }
 
 /* Botão para fechar o modal */
@@ -304,4 +324,30 @@ ul {
     font-family: "Inter", sans-serif;
     font-size: 18px;
     font-weight: 700;
+}
+
+#friendName {
+    display: 'none';
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    text-align: center;
+}
+
+.minorButton {
+    padding: 0px;
+    border: none;
+    width: 130px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.darkButton {
+    background: linear-gradient(180deg, rgba(175, 175, 175, 1) 0%, rgba(135, 135, 135, 1) 100%);
+    ;
+}
+
+.darkButton:hover {
+    background: linear-gradient(180deg, rgba(135, 135, 135, 1) 100%, rgba(175, 175, 175, 1) 0%);
+    ;
 }

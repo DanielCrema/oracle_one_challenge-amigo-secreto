@@ -339,10 +339,44 @@ function generateRandomId() {
 
 function drawFriend() {
     let randomId = generateRandomId(friendsArray);
-    displayModal('withSubtitle', 'singleButton', {
-        title: `O seu amigo secreto é:`,
-        subtitle: `${friendsArray[randomId].friendName}`
-    });
+    const friendName = friendsArray[randomId].friendName;
+    displayResult(friendName);
     if (randomId !== false) {
     }
+}
+
+// Gerenciar o botão de exibir e ocultar o nome do amigo
+let friendShown = false;
+const buttonToggleFriendName = document.getElementById('displayFriendNameButton');
+const friendNameParagraph = document.getElementById('friendName');
+buttonToggleFriendName.addEventListener('click', () => {
+    toggleFriendName();
+});
+
+function toggleFriendName() {
+    if (friendShown) {
+        friendShown = false;
+        buttonToggleFriendName.innerText = 'Exibir Nome';
+        friendNameParagraph.style.display = 'none';
+    } else {
+        friendShown = true;
+        buttonToggleFriendName.innerText = 'Ocultar Nome';
+        friendNameParagraph.style.display = 'block';
+    }
+}
+
+function displayResult(friendName) {
+    // Mudar o <p> do modal para o nome do amigo
+    // e reinicializar o layout
+    friendNameParagraph.innerHTML = friendName;
+    friendNameParagraph.style.display = 'none';
+    buttonToggleFriendName.innerText = 'Exibir Nome';
+
+    // Exibir o modal
+    const containerFriendName = document.getElementById('containerFriendName');
+    containerFriendName.style.display = 'flex';
+    displayModal('withSubtitle', 'singleButton', {
+        title: `Amigo sorteado:`,
+        subtitle: `Certifique-se que nenhum xereta está olhando`
+    });
 }
