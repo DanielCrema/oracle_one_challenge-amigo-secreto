@@ -349,21 +349,20 @@ function generateRandomId() {
         }
     } else {
         sortedIds.push(randomId);
-        return randomId;
+        const isLastFriend = friendsArray.length === sortedIds.length ? true : false;
+        return { randomId, isLastFriend };
     }
 }
 
 // Sortear um amigo aleatório
 function drawFriend() {
-    const randomId = generateRandomId(friendsArray);
+    const { randomId, isLastFriend } = generateRandomId(friendsArray);
     if (randomId !== false) {
         const friendName = friendsArray[randomId].friendName;
-        displayResult(friendName);
+        displayResult(friendName, isLastFriend);
     } else {
         setupEndGameEnvironment();
     }
-    // console.log('friendsArray = ', friendsArray);
-    // console.log('sortedIds = ', sortedIds);
 }
 
 
@@ -393,7 +392,7 @@ function toggleFriendName() {
 }
 
 // Exibir o modal com o nome do amigo
-function displayResult(friendName) {
+function displayResult(friendName, isLastFriend) {
     // Mudar o <p> do modal para o nome do amigo
     // e reinicializar o layout
     friendNameParagraph.innerHTML = friendName;
@@ -407,19 +406,35 @@ function displayResult(friendName) {
         title: `Amigo sorteado:`,
         subtitle: `Certifique-se que nenhum xereta está olhando`
     });
+
+    // Exibir a mensagem de fim de jogo
+    if (isLastFriend) {
+        setupEndGameEnvironment();
+    }
 }
 
 function setupEndGameEnvironment() {
-    // Esconde o container de nome do modal
-    const containerFriendName = document.getElementById('containerFriendName');
-    containerFriendName.style.display = 'none';
-    
-    // Configura o botão de iniciar novo sorteio
-    const buttonCancelDraw = document.querySelector('.button-cancel-draw');
-    buttonCancelDraw.removeAttribute('onclick');
-    buttonCancelDraw.setAttribute('onclick', 'confirmRestart()');
-    const p = buttonCancelDraw.querySelector('p');
-    p.innerHTML = 'Novo Sorteio';
+    warningExitButton.addEventListener('click', async () => {
+        // Esconde o container de nome do modal
+        const containerFriendName = document.getElementById('containerFriendName');
+        containerFriendName.style.display = 'none';
+
+        // Apresenta a mensagem de fim de jogo
+        await new Promise(resolve => setTimeout(resolve, 500));
+        displayModal('withSubtitle', 'singleButton', {
+            title: `Este era o último amigo`,
+            subtitle: `Você pode sortear novamente ou iniciar um novo sorteio nos botões ao fim da página`
+        });
+
+        warningExitButton.addEventListener('click', () => {
+            // Configura o botão de iniciar novo sorteio
+            const buttonCancelDraw = document.querySelector('.button-cancel-draw');
+            buttonCancelDraw.removeAttribute('onclick');
+            buttonCancelDraw.setAttribute('onclick', 'confirmRestart()');
+            const p = buttonCancelDraw.querySelector('p');
+            p.innerHTML = 'Novo Sorteio';
+        }, { once: true });
+    }, { once: true });
 }
 
 
