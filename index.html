@@ -43,8 +43,10 @@
                 <button class="button-add" onclick="addFriend()">Adicionar</button>
             </div>
 
-            <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
-            <ul id="resultado" class="result-list" aria-live="polite"></ul>
+           <div id="containerListaAmigos">
+                <p id="tituloListaAmigos">Amigos Adicionados</p> 
+                <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
+           </div>
 
             <div class="button-container">
                 <button class="button-draw" onclick="drawFriend()" aria-label="Sortear amigo secreto">

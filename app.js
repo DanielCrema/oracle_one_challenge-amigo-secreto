@@ -112,6 +112,10 @@ function validateFriendName(friendName) {
 
 // Função 'onclick' do botão de adicionar nome
 function addFriend() {
+    if (friendsArray.length === 0) {
+        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
+        tituloListaAmigos.style.display = 'block';
+    }
     const friendName = inputFriendName.value;
     if (validateFriendName(friendName)) {
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
@@ -147,6 +151,10 @@ function addToList(friendItem) {
 }
 
 function deleteItem(id) {
+    if (friendsArray.length === 1) {
+        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
+        tituloListaAmigos.style.display = 'none';
+    }
     const newArray = friendsArray
     .filter((friendItem) => friendItem.id !== parseInt(id))
     .map((friendItem, index) => {

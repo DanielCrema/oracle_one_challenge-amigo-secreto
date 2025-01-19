@@ -43,7 +43,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 0 0;
+    padding: 20px 0 0;
 }
 
 /* Backdrop do Modal */
@@ -274,4 +274,19 @@ ul {
     width: 14px;
     padding: 1px;
     cursor: pointer;
+}
+
+#containerListaAmigos {
+    margin: 30px 0px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#tituloListaAmigos {
+    display: none;
+    font-family: "Inter", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
 }
