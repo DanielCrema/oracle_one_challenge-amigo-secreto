@@ -198,6 +198,7 @@ inputFriendName.addEventListener('keyup', (e) => {
  * processos do sorteio
  * 
 **/
+let sortedIds = [];
 function confirmDrawStart() {
     if (friendsArray.length < 3) {
         displayModal('withSubtitle', 'singleButton', {
@@ -234,13 +235,13 @@ function confirmDrawCancel() {
     });
     const confirmButton = document.getElementById('confirmButton');
     confirmButton.addEventListener('click', () => {
-        cancelDraw();
+        endDraw();
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
     });
 };
 
-function cancelDraw() {
+function endDraw() {
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
     toggleDisplay('buttonDestructive', 'enable');
@@ -318,5 +319,30 @@ function toggleDisplay(element, parameter) {
                 })
             }
             break;
+    }
+}
+
+function generateRandomId() {
+    let randomId = Math.floor(Math.random() * friendsArray.length);
+
+    if (sortedIds.includes(randomId)) {
+        if (friendsArray.length > sortedIds.length) {
+            return generateRandomId();
+        } else {
+            return false;
+        }
+    } else {
+        sortedIds.push(randomId);
+        return randomId;
+    }
+}
+
+function drawFriend() {
+    let randomId = generateRandomId(friendsArray);
+    displayModal('withSubtitle', 'singleButton', {
+        title: `O seu amigo secreto é:`,
+        subtitle: `${friendsArray[randomId].friendName}`
+    });
+    if (randomId !== false) {
     }
 }
