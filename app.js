@@ -37,41 +37,45 @@ let scrollAtTop = true;
  * 
 */
 
-function blockScroll() {
-    window.scrollTo(0, document.body.scrollHeight);
-}
-
 // Adiciona dinamicidade ao jogo
 // engajando o usuário quando um nome é adicionado
 async function manageUserEngagementFlow(action) {
+    // Função bloqueadora de scroll
+    function blockScroll() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+    
+    // Capturando os elementos a serem manipulados
     const documentBody = document.body;
     const containerFriendsList = document.getElementById('containerListaAmigos');
     const containerDrawButtons = document.querySelector('.button-container');
+
+    // Lógica de flow
     if (action === 'clear') {
+        // Gerencia o estado do scroll
         scrollAtTop = true;
         window.removeEventListener('scroll', blockScroll);
+
         // Scroll suave para o topo
-        window.scrollTo({
-            top: 0,
-            // behavior: "smooth",
-        });
+        window.scrollTo({top: 0, behavior: "smooth"});
+        
         // Reseta o layout
         containerFriendsList.style.display = 'none';
         containerDrawButtons.style.display = 'none';
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 100));
         documentBody.style.height = '100vh';
     }
     if (action === 'start') {
-        scrollAtTop = false;
         // Expande o layout
         documentBody.style.height = '120vh';
         containerFriendsList.style.display = 'flex';
         containerDrawButtons.style.display = 'flex';
+
         // Scroll suave para o fim da página
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: "smooth",
-        });
+        window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
+
+        // Gerencia o estado do scroll
+        scrollAtTop = false;
         window.addEventListener('scroll', blockScroll);
     }
 }
