@@ -18,6 +18,10 @@ let sortedIds = [];
 // id ao amigo, de forma que sempre apontará para o id do último da lista
 let currentFriendId = -1;
 
+// Gerenciador de estado de visibilidade do
+// nome do amigo no modal durante o sorteio
+let visibleFriendName = false;
+
 
 /**
  * 
@@ -494,7 +498,6 @@ function drawFriend() {
 */
 
 // Gerenciar o botão de exibir e ocultar o nome do amigo
-let friendShown = false;
 const buttonToggleFriendName = document.getElementById('displayFriendNameButton');
 const friendNameParagraph = document.getElementById('friendName');
 buttonToggleFriendName.addEventListener('click', () => {
@@ -502,24 +505,26 @@ buttonToggleFriendName.addEventListener('click', () => {
 });
 
 function toggleFriendName() {
-    if (friendShown) {
-        friendShown = false;
+    if (visibleFriendName) {
+        visibleFriendName = false;
         buttonToggleFriendName.innerText = 'Exibir Nome';
         friendNameParagraph.style.display = 'none';
         return
     }
-    friendShown = true;
+    visibleFriendName = true;
     buttonToggleFriendName.innerText = 'Ocultar Nome';
     friendNameParagraph.style.display = 'block';
 }
 
 // Exibir o modal com o nome do amigo
 function displayResult(friendName) {
+    if (visibleFriendName) {
+        // Reseta o estado de ocultar o nome do amigo
+        buttonToggleFriendName.click();
+    }
+
     // Mudar o <p> do modal para o nome do amigo
-    // e reinicializar o layout
     friendNameParagraph.innerHTML = friendName;
-    friendNameParagraph.style.display = 'none';
-    buttonToggleFriendName.innerText = 'Exibir Nome';
 
     // Configurar e exibir o modal
     const containerFriendName = document.getElementById('containerFriendName');
@@ -652,6 +657,11 @@ function restart() {
     titleFriendsList.style.display = 'none';
     manageUserEngagementFlow('clear');
 
+    // Reseta o estado de ocultar o nome do amigo no modal
+    if (visibleFriendName) {
+        buttonToggleFriendName.click();
+    }
+
     // Reinicializa os botões inferiores
     resetDrawButtons();
 }
@@ -668,6 +678,11 @@ function drawAgain() {
     // Reabilita os botões destrutivos e desabilita as setas
     toggleDisplay('buttonDestructive', 'enable');
     toggleDisplay('iconRightArrow', 'disable');
+
+    // Reseta o estado de ocultar o nome do amigo no modal
+    if (visibleFriendName) {
+        buttonToggleFriendName.click();
+    }
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
