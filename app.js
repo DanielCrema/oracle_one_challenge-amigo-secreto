@@ -24,11 +24,17 @@ let visibleFriendName = false;
 
 // Gerenciador de scroll
 // 
-// Gerencia a posição da página
-// para controle server-side do scroll
+// Gerencia a posição da página para
+// controle server-side do scroll
 // 
 // O scroll do usuário será desabilitado
 let scrollAtTop = true;
+
+// Controlador da largura dos itens da lista
+// 
+// Inicializa em 0 e é usado como parâmetro para
+// harmonizar a largura dos elementos do grid
+let listItensCurrentWidth = 0;
 
 
 /**
@@ -44,7 +50,7 @@ async function manageUserEngagementFlow(action) {
     function blockScroll() {
         window.scrollTo(0, document.body.scrollHeight);
     }
-    
+
     // Capturando os elementos a serem manipulados
     const documentBody = document.body;
     const containerFriendsList = document.getElementById('containerListaAmigos');
@@ -57,8 +63,8 @@ async function manageUserEngagementFlow(action) {
         window.removeEventListener('scroll', blockScroll);
 
         // Scroll suave para o topo
-        window.scrollTo({top: 0, behavior: "smooth"});
-        
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         // Reseta o layout
         containerFriendsList.style.display = 'none';
         containerDrawButtons.style.display = 'none';
@@ -72,13 +78,32 @@ async function manageUserEngagementFlow(action) {
         containerDrawButtons.style.display = 'flex';
 
         // Scroll suave para o fim da página
-        window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
         // Gerencia o estado do scroll
         scrollAtTop = false;
         window.addEventListener('scroll', blockScroll);
     }
 }
+
+// Gerencia a largura dos itens da lista para
+// uma disposição geometricamente harmoniosa
+function manageFriendsListItensMinWidth(width) {
+    const list = document.getElementById('listaAmigos');
+    const listItems = document.querySelectorAll('.listItem');
+    if (width > listItensCurrentWidth) {
+        // Calcula a largura do pai
+        const listWidth = list.clientWidth;
+
+        // Calculate the item width based on the parent width and number of items
+        const itemWidth = Math.floor(listWidth / Math.ceil(Math.sqrt(listItems.length)));
+
+        // Update the min-width for all list items
+        listItems.forEach((item) => {
+            item.style.minWidth = `${itemWidth}px`;
+        });
+    }
+};
 
 // Adicionar nome com Enter
 const inputFriendName = document.getElementById('amigo');
@@ -341,6 +366,10 @@ function addToList(friendItem) {
     // Configura o texto do <p>
     const p = li.appendChild(document.createElement("p"));
     p.innerHTML = friendItem.friendName;
+
+    // Monitora e atualiza a largura dos elementos
+    const itemWidth = li.offsetWidth;
+    manageFriendsListItensMinWidth(itemWidth);
 }
 
 // Função para apagar um nome da lista
@@ -694,11 +723,15 @@ function resetDrawButtons() {
 
 // Limpa tudo para começar um novo sorteio
 function restart() {
-    // Limpa os arrays e
-    // reinicializa o currentId
+    // Reinicializa as variáveis globais
     friendsArray = [];
     sortedIds = [];
     currentFriendId = -1;
+    scrollAtTop = true;
+    listItensCurrentWidth = 0;
+    if (visibleFriendName) {
+        buttonToggleFriendName.click();
+    }
 
     // Reabilita o input e o botão de adicionar
     toggleDisplay('input', 'enable');
@@ -708,11 +741,6 @@ function restart() {
     const listaAmigos = document.getElementById('listaAmigos');
     listaAmigos.innerHTML = '';
     manageUserEngagementFlow('clear');
-
-    // Reseta o estado de ocultar o nome do amigo no modal
-    if (visibleFriendName) {
-        buttonToggleFriendName.click();
-    }
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
