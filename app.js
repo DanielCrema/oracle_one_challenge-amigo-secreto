@@ -22,6 +22,14 @@ let currentFriendId = -1;
 // nome do amigo no modal durante o sorteio
 let visibleFriendName = false;
 
+// Gerenciador de scroll
+// 
+// Gerencia a posição da página
+// para controle server-side do scroll
+// 
+// O scroll do usuário será desabilitado
+let scrollAtTop = true;
+
 
 /**
  * 
@@ -29,33 +37,42 @@ let visibleFriendName = false;
  * 
 */
 
+function blockScroll() {
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
 // Adiciona dinamicidade ao jogo
 // engajando o usuário quando um nome é adicionado
-function manageUserEngagementFlow(action) {
+async function manageUserEngagementFlow(action) {
     const documentBody = document.body;
-    const friendsList = document.getElementById('listaAmigos');
-    const drawButton = document.querySelector('.button-draw-action');
+    const containerFriendsList = document.getElementById('containerListaAmigos');
+    const containerDrawButtons = document.querySelector('.button-container');
     if (action === 'clear') {
+        scrollAtTop = true;
+        window.removeEventListener('scroll', blockScroll);
         // Scroll suave para o topo
         window.scrollTo({
             top: 0,
             // behavior: "smooth",
         });
         // Reseta o layout
+        containerFriendsList.style.display = 'none';
+        containerDrawButtons.style.display = 'none';
+        await new Promise(resolve => setTimeout(resolve, 50));
         documentBody.style.height = '100vh';
-        friendsList.style.display = 'none';
-        drawButton.style.display = 'none';
     }
     if (action === 'start') {
+        scrollAtTop = false;
         // Expande o layout
         documentBody.style.height = '120vh';
-        friendsList.style.display = 'grid';
-        drawButton.style.display = 'flex';
+        containerFriendsList.style.display = 'flex';
+        containerDrawButtons.style.display = 'flex';
         // Scroll suave para o fim da página
         window.scrollTo({
             top: document.body.scrollHeight,
             behavior: "smooth",
         });
+        window.addEventListener('scroll', blockScroll);
     }
 }
 
@@ -229,8 +246,8 @@ function validateFriendName(friendName) {
             // Formata a mensagem para erro único
             // inicializa a mensagem de múltiplos erros
             subtitleString += invalidCharsArray.length > 1 ?
-            'os caracteres:</p><div style="display: flex; gap: 10px; padding: 4px 25px 0px 20px"><p>=></p><p style="text-align: left">' :
-            `o caractere "<span style="font-weight: 700">${invalidCharsArray[0]}</span>"</p>`;
+                'os caracteres:</p><div style="display: flex; gap: 10px; padding: 4px 25px 0px 20px"><p>=></p><p style="text-align: left">' :
+                `o caractere "<span style="font-weight: 700">${invalidCharsArray[0]}</span>"</p>`;
 
             // Trata múltiplos erros
             // formatando a mensagem apropriadamente
@@ -238,10 +255,10 @@ function validateFriendName(friendName) {
                 for (let i = 0; i < invalidCharsArray.length; i++) {
                     subtitleString += `"<span style="font-weight: 700">${invalidCharsArray[i]}</span>"`;
 
-                    const arrayLastIndex = invalidCharsArray.indexOf(invalidCharsArray[invalidCharsArray.length -1]);
-                    if (i < arrayLastIndex -1) {
+                    const arrayLastIndex = invalidCharsArray.indexOf(invalidCharsArray[invalidCharsArray.length - 1]);
+                    if (i < arrayLastIndex - 1) {
                         subtitleString += ', '
-                    } else if (i === arrayLastIndex -1) {
+                    } else if (i === arrayLastIndex - 1) {
                         subtitleString += ' e '
                     } else if (i === arrayLastIndex) {
                         subtitleString += '</p></div>'
@@ -287,8 +304,6 @@ function addFriend() {
 // Função para adicionar nomes na lista de amigos
 function addToList(friendItem) {
     if (friendsArray.length === 0) {
-        const titleFriendsList = document.getElementById('tituloListaAmigos');
-        titleFriendsList.style.display = 'block';
         manageUserEngagementFlow('start');
     }
     friendsArray.push(friendItem);
@@ -327,9 +342,6 @@ function addToList(friendItem) {
 // Função para apagar um nome da lista
 function deleteItem(id) {
     if (friendsArray.length === 1) {
-        // Apaga o título da lista caso o último elemento seja apagado
-        const titleFriendsList = document.getElementById('tituloListaAmigos');
-        titleFriendsList.style.display = 'none';
         manageUserEngagementFlow('clear');
     }
 
@@ -691,8 +703,6 @@ function restart() {
     // Limpa a lista de amigos
     const listaAmigos = document.getElementById('listaAmigos');
     listaAmigos.innerHTML = '';
-    const titleFriendsList = document.getElementById('tituloListaAmigos');
-    titleFriendsList.style.display = 'none';
     manageUserEngagementFlow('clear');
 
     // Reseta o estado de ocultar o nome do amigo no modal
