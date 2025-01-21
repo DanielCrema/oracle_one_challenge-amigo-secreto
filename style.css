@@ -198,7 +198,7 @@ body::-webkit-scrollbar {
 
 .section-title {
     font-family: "Inter", serif;
-    font-size: 36px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--color-primary);
     margin: 10px 0;
@@ -211,7 +211,7 @@ body::-webkit-scrollbar {
     justify-content: center;
     width: 100%;
     max-width: 600px;
-    margin-top: 20px;
+    margin-top: 15PX;
 }
 
 .input-name {
@@ -311,7 +311,7 @@ ul {
     grid-auto-flow: column;
     gap: 10px 20px;
     max-height: 170px;
-    max-width: 550px;
+    max-width: 1000px;
     overflow-y: auto;
 }
 
@@ -335,11 +335,12 @@ ul {
 }
 
 #containerListaAmigos {
-    margin: 25px 0px 10px;
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 25px 0px 10px;
+    min-width: 450px;
 }
 
 #tituloListaAmigos {
@@ -349,9 +350,44 @@ ul {
     font-weight: 700;
 }
 
+#containerTitle {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: 3.4fr 1fr;
+    width: 600px;
+}
+
+#containerContadorDeAmigos {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    /* border: 1px solid #000; */
+    color: #000;
+}
+
+#contadorDeAmigos {
+    display: flex;
+    min-height: 35px;
+    min-width: 50px;
+    border: 2px solid #000;
+    background-color: #FFFDFB;
+    padding: 6px 18px;
+    border-radius: 14px;
+}
+
 #friendName {
     font-family: "Inter", sans-serif;
-    font-weight: 700;
+    /* font-weight: 700; */
     text-align: center;
 }
 

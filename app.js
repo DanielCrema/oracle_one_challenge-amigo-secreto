@@ -86,6 +86,24 @@ async function manageUserEngagementFlow(action) {
     }
 }
 
+// Atualizador do contador de amigos
+function updateFriendCounter(value) {
+    const containerFriendCounter = document.getElementById('containerContadorDeAmigos');
+    const friendCounter = document.getElementById('contadorDeAmigos');
+
+    // Gerencia o display
+    if (currentFriendId === -1) {
+        containerFriendCounter.style.display = 'none';
+        return
+    }
+    if (currentFriendId === 0) {
+        containerFriendCounter.style.display = 'flex';
+    }
+
+    // Incrementa o valor
+    friendCounter.innerHTML = value.toString();
+}
+
 // Gerencia a largura dos itens da lista para
 // uma disposição geometricamente harmoniosa
 function manageFriendsListItensMinWidth(width) {
@@ -320,6 +338,7 @@ function addFriend() {
     const friendName = inputFriendName.value.trim();
     if (validateFriendName(friendName)) {
         currentFriendId++
+        updateFriendCounter(currentFriendId + 1);
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
         const friendItem = {
             id: currentFriendId,
@@ -732,6 +751,9 @@ function restart() {
     if (visibleFriendName) {
         buttonToggleFriendName.click();
     }
+
+    // Reinicializa o contador de amigos
+    updateFriendCounter(currentFriendId);
 
     // Reabilita o input e o botão de adicionar
     toggleDisplay('input', 'enable');
