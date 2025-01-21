@@ -55,6 +55,7 @@ async function manageUserEngagementFlow(action) {
     const documentBody = document.body;
     const containerFriendsList = document.getElementById('containerListaAmigos');
     const containerDrawButtons = document.querySelector('.button-container');
+    const containerFriendCounter = document.getElementById('containerContadorDeAmigos');
 
     // Lógica de flow
     if (action === 'clear') {
@@ -66,6 +67,7 @@ async function manageUserEngagementFlow(action) {
         window.scrollTo({ top: 0, behavior: "smooth" });
 
         // Reseta o layout
+        containerFriendCounter.style.display = 'none';
         containerFriendsList.style.display = 'none';
         containerDrawButtons.style.display = 'none';
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -74,6 +76,7 @@ async function manageUserEngagementFlow(action) {
     if (action === 'start') {
         // Expande o layout
         documentBody.style.height = '120vh';
+        containerFriendCounter.style.display = 'flex';
         containerFriendsList.style.display = 'flex';
         containerDrawButtons.style.display = 'flex';
 
@@ -87,21 +90,14 @@ async function manageUserEngagementFlow(action) {
 }
 
 // Atualizador do contador de amigos
-function updateFriendCounter(value) {
+function updateFriendCounter() {
     const containerFriendCounter = document.getElementById('containerContadorDeAmigos');
     const friendCounter = document.getElementById('contadorDeAmigos');
+    const listItens = document.querySelectorAll('.listItem');
+    const listLength = listItens.length;
 
-    // Gerencia o display
-    if (currentFriendId === -1) {
-        containerFriendCounter.style.display = 'none';
-        return
-    }
-    if (currentFriendId === 0) {
-        containerFriendCounter.style.display = 'flex';
-    }
-
-    // Incrementa o valor
-    friendCounter.innerHTML = value.toString();
+    // Incrementa o valor no HTML
+    friendCounter.innerHTML = listLength.toString();
 }
 
 // Gerencia a largura dos itens da lista para
@@ -352,6 +348,7 @@ function addFriend() {
 function addToList(friendItem) {
     if (friendsArray.length === 0) {
         manageUserEngagementFlow('start');
+        updateFriendCounter();
     }
     friendsArray.push(friendItem);
 
@@ -390,13 +387,14 @@ function addToList(friendItem) {
     manageFriendsListItensMinWidth(itemWidth);
 
     // Atualiza o contador de amigos
-    updateFriendCounter(currentFriendId + 1);
+    updateFriendCounter();
 }
 
 // Função para apagar um nome da lista
 function deleteItem(id) {
     if (friendsArray.length === 1) {
         manageUserEngagementFlow('clear');
+        updateFriendCounter();
     }
 
     // Elimina o nome a ser apagado e gera um novo array
@@ -755,7 +753,7 @@ function restart() {
     }
 
     // Reinicializa o contador de amigos
-    updateFriendCounter(currentFriendId);
+    updateFriendCounter();
 
     // Reabilita o input e o botão de adicionar
     toggleDisplay('input', 'enable');
