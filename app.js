@@ -3,6 +3,24 @@
 
 /**
  * 
+ * Variáveis Globais
+ * 
+*/
+
+// Lista de amigos adicionados ao sorteio atual
+let friendsArray = [];
+
+// Lista de amigos sorteados
+let sortedIds = [];
+
+// Contador de id do amigo para gerenciar inclusão e exclusão de amigos na lista
+// inicializa em -1, index de array vazio, e incrementa antes de atribuir o
+// id ao amigo, de forma que sempre apontará para o id do último da lista
+let currentFriendId = -1;
+
+
+/**
+ * 
  * Lógicas globais do modal
  * 
 **/
@@ -11,58 +29,92 @@
 // do modal e do input no HTML
 const backdrop = document.getElementById('backdrop');
 const containerModal = document.getElementById('containerModal');
-const containerWarningMessage = document.getElementById('containerWarningMessage');
-const warningTitle = document.getElementById('warningTitle');
-const warningSubtitleDiv = document.getElementById('missingField');
-const warningExitButton = document.getElementById('warningExitButton');
+const containerModalMessage = document.getElementById('containerWarningMessage');
+const modalTitle = document.getElementById('warningTitle');
+const modalSubtitleDiv = document.getElementById('missingField');
+const modalExitButton = document.getElementById('warningExitButton');
 const containerConfirmButtons = document.getElementById('containerConfirmButtons');
 const cancelButton = document.getElementById('cancelButton');
 const inputFriendName = document.getElementById('amigo');
 
 // Lógica para gerenciar os botões de fechar o modal
-function setWarningExitButtonEventListener() {
-    warningExitButton.addEventListener('click', () => {
+function setmodalExitButtonEventListener() {
+    // Modal de botão único
+    modalExitButton.addEventListener('click', () => {
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
         inputFriendName.value = '';
     });
 }
 function setCancelButtonEventListener() {
+    // Modal de dois botões : Botão de cancelar
     cancelButton.addEventListener('click', () => {
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
         inputFriendName.value = '';
     });
 }
-setWarningExitButtonEventListener();
+setmodalExitButtonEventListener();
 setCancelButtonEventListener();
 
 // Função para exibir o modal
-function displayModal(displayCase, buttonLayout, alertMessage) {
-    warningTitle.innerHTML = alertMessage.title;
+function displayModal(displayCase, buttonLayout, modalMessage) {
+    modalTitle.innerHTML = '';
+    modalTitle.innerHTML = modalMessage.title;
     if (buttonLayout === 'singleButton') {
-        warningExitButton.style.display = 'block';
+        modalExitButton.style.display = 'block';
         containerConfirmButtons.style.display = 'none';
     } else if (buttonLayout === 'twoButtons') {
-        warningExitButton.style.display = 'none';
+        modalExitButton.style.display = 'none';
         containerConfirmButtons.style.display = 'flex';
     }
 
     if (displayCase == 'noSubtitle') {
-        warningTitle.style.fontWeight = 400;
-        warningSubtitleDiv.style.display = 'none';
-        containerWarningMessage.style.width = '450px';
-        containerWarningMessage.style.minHeight = '150px';
+        modalTitle.style.fontWeight = 400;
+        modalSubtitleDiv.style.display = 'none';
+        containerModalMessage.style.width = '450px';
+        containerModalMessage.style.minHeight = '150px';
     } else if (displayCase == 'withSubtitle') {
-        warningTitle.style.fontWeight = '700';
-        warningSubtitleDiv.innerHTML = `<p>${alertMessage.subtitle}</p>`;
-        warningSubtitleDiv.style.display = 'flex';
-        containerWarningMessage.style.width = '500px';
-        containerWarningMessage.style.minHeight = '200px';
+        modalTitle.style.fontWeight = '700';
+        modalSubtitleDiv.innerHTML = '';
+        modalSubtitleDiv.innerHTML = `<p>${modalMessage.subtitle}</p>`;
+        modalSubtitleDiv.style.display = 'flex';
+        containerModalMessage.style.width = '500px';
+        containerModalMessage.style.minHeight = '200px';
     }
 
     backdrop.style.display = 'block';
     containerModal.style.display = 'flex';
+}
+
+// Gerador de listeners temporários para os diálogos de confirmação
+// importante para evitar acúmulo de listeners residuais
+function manageModalButtonTemporaryEventListeners(listenerFunction, buttonLayout) {
+    // Configura o botão do modal de um botão
+    if (buttonLayout === 'singleButton') {
+        const modalExitButton = document.getElementById('warningExitButton');
+        modalExitButton.addEventListener('click', () => {
+            listenerFunction();
+        }, { once: true });
+        return
+    }
+
+    // Configura o botão do modal de dois botões
+    // 
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+
+    // Limpador de listeners
+    function clearListeners() {
+        confirmButton.removeEventListener('click', listenerFunction);
+        confirmButton.removeEventListener('click', clearListeners);
+        cancelButton.removeEventListener('click', clearListeners);
+    }
+
+    // Aplica os listeners
+    confirmButton.addEventListener('click', listenerFunction, { once: true });
+    confirmButton.addEventListener('click', clearListeners, { once: true });
+    cancelButton.addEventListener('click', clearListeners, { once: true });
 }
 
 
@@ -73,13 +125,10 @@ function displayModal(displayCase, buttonLayout, alertMessage) {
  * 
 **/
 
-let friendsArray = [];
-let currentFriendId = 0;
-
 // Função para validar o nome
 function validateFriendName(friendName) {
     // Função para verificar se o nome sendo adicionado já existe na lista
-    function verifyNamesInArray(arr, nome) {
+    function verifyNamesInArray(arr, nameToFind) {
         function extractNamesFromArrayInnerObjects(arr) {
             const namesArray = [];
             arr.forEach((element) => {
@@ -91,7 +140,7 @@ function validateFriendName(friendName) {
         if (typeof arr[0] == 'object') {
             arr = extractNamesFromArrayInnerObjects(arr);
         }
-        const found = arr.find((element) => element.toLowerCase() == nome.toLowerCase());
+        const found = arr.find((element) => element.toLowerCase() == nameToFind.toLowerCase());
 
         return found
     }
@@ -126,24 +175,28 @@ function validateFriendName(friendName) {
 function addFriend() {
     const friendName = inputFriendName.value;
     if (validateFriendName(friendName)) {
+        currentFriendId++
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
         const friendItem = {
             id: currentFriendId,
             friendName: normalizedFriendName
         }
         addToList(friendItem);
+        inputFriendName.value = '';
     }
 }
 
 // Função para adicionar nomes na lista de amigos
 function addToList(friendItem) {
     if (friendsArray.length === 0) {
-        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
-        tituloListaAmigos.style.display = 'block';
+        const titleFriendsList = document.getElementById('tituloListaAmigos');
+        titleFriendsList.style.display = 'block';
     }
     friendsArray.push(friendItem);
 
-    // Lógica de manipulação do DOM
+    /**
+     * Lógica de manipulação do DOM
+    */
     const friendsList = document.getElementById('listaAmigos');
     const li = friendsList.appendChild(document.createElement("li"));
     li.classList.add('listItem');
@@ -160,25 +213,26 @@ function addToList(friendItem) {
     imgButtonDestructive.classList.add('buttonDestructive');
     imgButtonDestructive.setAttribute("src", "/assets/red-trash-can-icon.png");
     imgButtonDestructive.setAttribute("alt", `Excluir ${friendItem.friendName}`);
-    const p = li.appendChild(document.createElement("p"));
     imgButtonDestructive.addEventListener('click', () => {
         const itemId = li.id.match(/\d/)[0]
         deleteItem(itemId);
     })
 
+    // Configura o texto do <p>
+    const p = li.appendChild(document.createElement("p"));
     p.innerHTML = friendItem.friendName;
-    currentFriendId++
-    inputFriendName.value = '';
-
 }
 
 // Função para apagar um nome da lista
 function deleteItem(id) {
     if (friendsArray.length === 1) {
-        const tituloListaAmigos = document.getElementById('tituloListaAmigos');
-        tituloListaAmigos.style.display = 'none';
+        // Apaga o título da lista caso o último elemento seja apagado
+        const titleFriendsList = document.getElementById('tituloListaAmigos');
+        titleFriendsList.style.display = 'none';
     }
-    const newArray = friendsArray
+
+    // Elimina o nome a ser apagado e gera um novo array
+    const newFriendsArray = friendsArray
         .filter((friendItem) => friendItem.id !== parseInt(id))
         .map((friendItem, index) => {
             // Update ids for the remaining items
@@ -186,11 +240,12 @@ function deleteItem(id) {
             return friendItem;
         });
 
+    // Limpa tudo e adiciona os amigos novamente 
     const friendsList = document.getElementById('listaAmigos');
     friendsList.innerHTML = '';
     friendsArray = [];
-    currentFriendId = 0
-    newArray.forEach((friendItem) => {
+    currentFriendId = -1
+    newFriendsArray.forEach((friendItem) => {
         addToList(friendItem);
     });
 }
@@ -209,65 +264,6 @@ inputFriendName.addEventListener('keyup', (e) => {
  * processos de UI/UX do sorteio
  * 
 **/
-
-let sortedIds = [];
-// UI para confirmar o início do sorteio
-function confirmDrawStart() {
-    if (friendsArray.length < 3) {
-        displayModal('withSubtitle', 'singleButton', {
-            title: `Impossível realizar sorteio`,
-            subtitle: `Certifique-se de incluir pelo menos <span style="font-weight: 700">3</span> pessoas`
-        });
-    } else {
-        displayModal('withSubtitle', 'twoButtons', {
-            title: `O sorteio irá começar`,
-            subtitle: `Após iniciar o sorteio não será possível adicionar ou remover nomes da lista`
-        });
-        const confirmButton = document.getElementById('confirmButton');
-        confirmButton.addEventListener('click', () => {
-            startDraw();
-            backdrop.style.display = 'none';
-            containerModal.style.display = 'none';
-        }, { once: true });
-    }
-};
-
-// Configura UI do sorteio
-function startDraw() {
-    toggleDisplay('input', 'disable');
-    toggleDisplay('addButton', 'disable');
-    toggleDisplay('buttonDestructive', 'disable');
-    toggleDisplay('iconRightArrow', 'enable');
-    toggleDisplay('buttonDraw', 'enable');
-    toggleDisplay('buttonCancelDraw', 'enable');
-};
-
-// UI para confirmar cancelamento do sorteio
-function confirmDrawCancel() {
-    const containerFriendName = document.getElementById('containerFriendName');
-    containerFriendName.style.display = 'none';
-    displayModal('withSubtitle', 'twoButtons', {
-        title: `Tem certeza que deseja cancelar?`,
-        subtitle: `Clicando em confirmar você terá que recomeçar o sorteio do início`
-    });
-    const confirmButton = document.getElementById('confirmButton');
-    confirmButton.addEventListener('click', () => {
-        cancelDraw();
-        backdrop.style.display = 'none';
-        containerModal.style.display = 'none';
-    }, { once: true });
-};
-
-// Configura UI saindo do sorteio
-function cancelDraw() {
-    sortedIds = [];
-    toggleDisplay('input', 'enable');
-    toggleDisplay('addButton', 'enable');
-    toggleDisplay('buttonDestructive', 'enable');
-    toggleDisplay('iconRightArrow', 'disable');
-    toggleDisplay('buttonDraw', 'disable');
-    toggleDisplay('buttonCancelDraw', 'disable');
-};
 
 // Lógicas para manipular o DOM iniciando e saindo do sorteio
 function toggleDisplay(element, parameter) {
@@ -342,6 +338,70 @@ function toggleDisplay(element, parameter) {
     }
 }
 
+// UI para confirmar o início do sorteio
+function confirmDrawStart() {
+    if (friendsArray.length < 3) {
+        displayModal('withSubtitle', 'singleButton', {
+            title: `Impossível realizar sorteio`,
+            subtitle: `Certifique-se de incluir pelo menos <span style="font-weight: 700">3</span> pessoas`
+        });
+    } else {
+        displayModal('withSubtitle', 'twoButtons', {
+            title: `O sorteio irá começar`,
+            subtitle: `Após iniciar o sorteio não será possível adicionar ou remover nomes da lista`
+        });
+
+        // Configura o listener do botão confirm do modal para iniciar o sorteio
+        function handleConfirm() {
+            startDraw();
+            backdrop.style.display = 'none';
+            containerModal.style.display = 'none';
+        }
+
+        manageModalButtonTemporaryEventListeners(handleConfirm);
+    }
+};
+
+// Configura UI do sorteio
+function startDraw() {
+    toggleDisplay('input', 'disable');
+    toggleDisplay('addButton', 'disable');
+    toggleDisplay('buttonDestructive', 'disable');
+    toggleDisplay('iconRightArrow', 'enable');
+    toggleDisplay('buttonDraw', 'enable');
+    toggleDisplay('buttonCancelDraw', 'enable');
+};
+
+// UI para confirmar cancelamento do sorteio
+function confirmDrawCancel() {
+    const containerFriendName = document.getElementById('containerFriendName');
+    containerFriendName.style.display = 'none';
+    displayModal('withSubtitle', 'twoButtons', {
+        title: `Tem certeza que deseja cancelar?`,
+        subtitle: `Clicando em confirmar você terá que recomeçar o sorteio do início`
+    });
+
+    // Configura o listener do botão confirm do modal para cancelar o sorteio
+    function handleConfirm() {
+        cancelDraw();
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+    }
+
+    manageModalButtonTemporaryEventListeners(handleConfirm);
+};
+
+// Configura UI saindo do sorteio
+function cancelDraw() {
+    sortedIds = [];
+    toggleDisplay('input', 'enable');
+    toggleDisplay('addButton', 'enable');
+    toggleDisplay('buttonDestructive', 'enable');
+    toggleDisplay('iconRightArrow', 'disable');
+    toggleDisplay('buttonDraw', 'disable');
+    toggleDisplay('buttonCancelDraw', 'disable');
+};
+
 
 /**
  * Lógicas do Sorteio
@@ -359,20 +419,19 @@ function generateRandomId() {
         }
     } else {
         sortedIds.push(randomId);
-        const isLastFriend = friendsArray.length === sortedIds.length ? true : false;
-        return { randomId, isLastFriend };
+        return randomId;
     }
 }
 
 // Sortear um amigo aleatório
 function drawFriend() {
-    const { randomId, isLastFriend } = generateRandomId(friendsArray);
-    if (randomId !== false) {
-        const friendName = friendsArray[randomId].friendName;
-        displayResult(friendName, isLastFriend);
-    } else {
+    const randomId = generateRandomId(friendsArray);
+    if (randomId === false) {
         setupEndGameEnvironment();
+        return
     }
+    const friendName = friendsArray[randomId].friendName;
+    displayResult(friendName);
 }
 
 
@@ -394,22 +453,22 @@ function toggleFriendName() {
         friendShown = false;
         buttonToggleFriendName.innerText = 'Exibir Nome';
         friendNameParagraph.style.display = 'none';
-    } else {
-        friendShown = true;
-        buttonToggleFriendName.innerText = 'Ocultar Nome';
-        friendNameParagraph.style.display = 'block';
+        return
     }
+    friendShown = true;
+    buttonToggleFriendName.innerText = 'Ocultar Nome';
+    friendNameParagraph.style.display = 'block';
 }
 
 // Exibir o modal com o nome do amigo
-function displayResult(friendName, isLastFriend) {
+function displayResult(friendName) {
     // Mudar o <p> do modal para o nome do amigo
     // e reinicializar o layout
     friendNameParagraph.innerHTML = friendName;
     friendNameParagraph.style.display = 'none';
     buttonToggleFriendName.innerText = 'Exibir Nome';
 
-    // Exibir o modal
+    // Configurar e exibir o modal
     const containerFriendName = document.getElementById('containerFriendName');
     containerFriendName.style.display = 'flex';
     displayModal('withSubtitle', 'singleButton', {
@@ -418,13 +477,14 @@ function displayResult(friendName, isLastFriend) {
     });
 
     // Exibir a mensagem de fim de jogo
+    const isLastFriend = friendsArray.length === sortedIds.length ? true : false;
     if (isLastFriend) {
         setupEndGameEnvironment();
     }
 }
 
 function setupEndGameEnvironment() {
-    warningExitButton.addEventListener('click', async () => {
+    modalExitButton.addEventListener('click', async () => {
         // Esconde o container de nome do modal
         const containerFriendName = document.getElementById('containerFriendName');
         containerFriendName.style.display = 'none';
@@ -436,7 +496,7 @@ function setupEndGameEnvironment() {
             subtitle: `Você pode sortear novamente ou iniciar um novo sorteio nos botões ao fim da página`
         });
 
-        warningExitButton.addEventListener('click', () => {
+        modalExitButton.addEventListener('click', () => {
             // Configura o botão de iniciar novo sorteio
             const buttonCancelDraw = document.querySelector('.button-cancel-draw');
             buttonCancelDraw.removeAttribute('onclick');
@@ -460,45 +520,25 @@ function setupEndGameEnvironment() {
  *  de UI/UX após o sorteio
 */
 
-// Gerencia os listeners dos diálogos de confirmação
+// Gerencia os diálogos de confirmação
 function manageConfirmations(functionToCall, message) {
-    const confirmButton = document.getElementById('confirmButton');
-    const cancelButton = document.getElementById('cancelButton');
-    const warningExitButton = document.getElementById('warningExitButton');
-
-    // Limpador de listeners
-    function clearListeners() {
-        confirmButton.removeEventListener('click', handleConfirm);
-        cancelButton.removeEventListener('click', handleCancel);
-    }
-
     // Define a função do listener de confirmação
     async function handleConfirm() {
         backdrop.style.display = 'none';
         containerModal.style.display = 'none';
-        clearListeners();
         if (message) {
             // Apresenta uma mensagem informativa
             await new Promise(resolve => setTimeout(resolve, 250));
             displayModal('noSubtitle', 'singleButton', {
                 title: `${message}`,
             });
-            warningExitButton.addEventListener('click', () => {
-                functionToCall();
-            }, { once: true })
+            manageModalButtonTemporaryEventListeners(functionToCall, 'singleButton')
         } else {
             functionToCall();
         }
     }
 
-    // Define a função do listener de cancelamento
-    function handleCancel() {
-        clearListeners();
-    }
-
-    // Attach the listeners
-    confirmButton.addEventListener('click', handleConfirm, { once: true });
-    cancelButton.addEventListener('click', handleCancel, { once: true });
+    manageModalButtonTemporaryEventListeners(handleConfirm);
 }
 
 // Gerencia a UX de iniciar novo sorteio
@@ -531,7 +571,8 @@ function resetDrawButtons() {
     const buttonCancelDrawParagraph = buttonCancelDraw.querySelector('p');
     buttonCancelDrawParagraph.innerHTML = 'Cancelar Sorteio';
 
-    // Reinicializa o botão de Iniciar Sorteio para sua funcionalidade original
+    // Reinicializa o botão de Iniciar Sorteio para
+    // sua funcionalidade original
     toggleDisplay('buttonDraw', 'disable');
     const buttonDraw = document.querySelector('.button-draw-action');
     buttonDraw.setAttribute('onclick', 'confirmDrawStart()');
@@ -541,10 +582,12 @@ function resetDrawButtons() {
 
 // Limpa tudo para começar um novo sorteio
 function restart() {
-    // Limpa os arrays
+    // Limpa os arrays e
+    // reinicializa o currentId
     friendsArray = [];
     sortedIds = [];
-
+    currentFriendId = -1;
+    
     // Reabilita o input e o botão de adicionar
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
@@ -552,8 +595,8 @@ function restart() {
     // Limpa a lista de amigos
     const listaAmigos = document.getElementById('listaAmigos');
     listaAmigos.innerHTML = '';
-    const tituloListaAmigos = document.getElementById('tituloListaAmigos');
-    tituloListaAmigos.style.display = 'none';
+    const titleFriendsList = document.getElementById('tituloListaAmigos');
+    titleFriendsList.style.display = 'none';
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
