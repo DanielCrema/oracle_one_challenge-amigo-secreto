@@ -55,7 +55,6 @@ async function manageUserEngagementFlow(action) {
     const documentBody = document.body;
     const containerFriendsList = document.getElementById('containerListaAmigos');
     const containerDrawButtons = document.querySelector('.button-container');
-    const gameTitle = document.querySelector('.section-title');
     const containerFriendCounter = document.getElementById('containerContadorDeAmigos');
 
     // Lógica de flow
@@ -68,7 +67,7 @@ async function manageUserEngagementFlow(action) {
         window.scrollTo({ top: 0, behavior: "smooth" });
 
         // Reseta o layout
-        gameTitle.innerText = 'Digite um nome para começar';
+        updateTitle('clear');
         containerFriendCounter.style.display = 'none';
         containerFriendsList.style.display = 'none';
         containerDrawButtons.style.display = 'none';
@@ -78,7 +77,7 @@ async function manageUserEngagementFlow(action) {
     if (action === 'start') {
         // Expande o layout
         documentBody.style.height = '120vh';
-        gameTitle.innerText = 'Adicione seus amigos';
+        updateTitle('addingStart');
         containerFriendCounter.style.display = 'flex';
         containerFriendsList.style.display = 'flex';
         containerDrawButtons.style.display = 'flex';
@@ -100,6 +99,21 @@ function updateFriendCounter() {
 
     // Incrementa o valor no HTML
     friendCounter.innerHTML = listLength.toString();
+}
+
+// Atualizador da mensagem principal do jogo
+function updateTitle(parameter) {
+    const gameTitle = document.querySelector('.section-title');
+    if (parameter === 'addingStart') {
+        gameTitle.innerText = 'Adicione seus amigos'
+    } else if (parameter === 'drawStart') {
+        gameTitle.innerText = 'O sorteio começou'
+    } else if (parameter === 'drawEnd') {
+        gameTitle.innerText = 'Fim do sorteio';
+    } else if (parameter === 'clear') {
+        gameTitle.innerText = 'Digite um nome para começar';
+
+    }
 }
 
 // Gerencia a largura dos itens da lista para
@@ -429,15 +443,6 @@ function deleteItem(id) {
 // Lógicas para manipular o DOM iniciando e saindo do sorteio
 function toggleDisplay(element, parameter) {
     switch (element) {
-        case 'title':
-            const gameTitle = document.querySelector('.section-title');
-            if (parameter === 'disable') {
-                gameTitle.innerText = 'O sorteio começou'
-            } else if (parameter === 'enable') {
-                gameTitle.innerText = 'Adicione seus amigos'
-            }
-            break;
-
         case 'input':
             if (parameter === 'disable') {
                 inputFriendName.disabled = true;
@@ -539,7 +544,7 @@ function confirmDrawStart() {
 
 // Configura UI do sorteio
 function startDraw() {
-    toggleDisplay('title', 'disable');
+    updateTitle('drawStart');
     toggleDisplay('input', 'disable');
     toggleDisplay('addButton', 'disable');
     toggleDisplay('buttonDestructive', 'disable');
@@ -570,7 +575,7 @@ function confirmDrawCancel() {
 // Configura UI saindo do sorteio
 function cancelDraw() {
     sortedIds = [];
-    toggleDisplay('title', 'enable');
+    updateTitle('addingStart');
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
     toggleDisplay('buttonDestructive', 'enable');
@@ -676,8 +681,7 @@ function setupEndGameEnvironment() {
 
         modalExitButton.addEventListener('click', () => {
             // Redefine o título
-            const gameTitle = document.querySelector('.section-title');
-            gameTitle.innerText = 'Fim do sorteio';
+            updateTitle('drawEnd');
 
             // Configura o botão de iniciar novo sorteio
             const buttonCancelDraw = document.querySelector('.button-cancel-draw');
@@ -809,7 +813,7 @@ function drawAgain() {
     }
 
     // Redefine o título
-    toggleDisplay('title', 'enable');
+    updateTitle('addingStart');
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
