@@ -201,7 +201,7 @@ function validateFriendName(friendName) {
 
     let isValid = false;
     if (friendName !== '') {
-        const validationRegex = /^[a-z]*$/i;
+        const validationRegex = /^[a-zà-öø-ÿ]+([ '-][a-zà-öø-ÿ]+)*$/i;
         if (validationRegex.test(friendName)) {
             if (!verifyNamesInArray(friendsArray, friendName)) {
                 isValid = true;
@@ -213,9 +213,47 @@ function validateFriendName(friendName) {
 
             }
         } else {
+            // Captura os caracteres inválidos
+            const invalidCharsRegex = /[^a-zà-öø-ÿ '-]/gi
+            const invalidCharsArray = friendName.match(invalidCharsRegex);
+
+            /**
+             * 
+             * Formata a string do subtítulo do modal
+             * 
+            */
+
+            // Inicializa a mensagem
+            let subtitleString = '<div style="display: flex; flex-direction: column; justify-content: center"><p style="padding: 0px 40px 5px">Nomes não podem conter ';
+
+            // Formata a mensagem para erro único
+            // inicializa a mensagem de múltiplos erros
+            subtitleString += invalidCharsArray.length > 1 ?
+            'os caracteres:</p><div style="display: flex; gap: 10px; padding: 4px 25px 0px 20px"><p>=></p><p style="text-align: left">' :
+            `o caractere "<span style="font-weight: 700">${invalidCharsArray[0]}</span>"</p>`;
+
+            // Trata múltiplos erros
+            // formatando a mensagem apropriadamente
+            if (invalidCharsArray.length > 1) {
+                for (let i = 0; i < invalidCharsArray.length; i++) {
+                    subtitleString += `"<span style="font-weight: 700">${invalidCharsArray[i]}</span>"`;
+
+                    const arrayLastIndex = invalidCharsArray.indexOf(invalidCharsArray[invalidCharsArray.length -1]);
+                    if (i < arrayLastIndex -1) {
+                        subtitleString += ', '
+                    } else if (i === arrayLastIndex -1) {
+                        subtitleString += ' e '
+                    } else if (i === arrayLastIndex) {
+                        subtitleString += '</p></div>'
+                    }
+                }
+            };
+            subtitleString += '<span id="decorativeSeparator"></span>';
+            subtitleString += '<p style="padding: 0px 40px 5px">Certifique-se de incluir um nome válido</p></div>';
+
             displayModal('withSubtitle', 'singleButton', {
                 title: `<p style="font-weight: 400">O nome <span style="font-weight: 900">"${friendName}"</span> não é um nome válido</p>`,
-                subtitle: `Certifique-se de incluir apenas letras nos nomes`
+                subtitle: subtitleString
             });
             manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
 
@@ -233,7 +271,7 @@ function validateFriendName(friendName) {
 
 // Função 'onclick' do botão de adicionar nome
 function addFriend() {
-    const friendName = inputFriendName.value;
+    const friendName = inputFriendName.value.trim();
     if (validateFriendName(friendName)) {
         currentFriendId++
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);

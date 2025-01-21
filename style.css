@@ -109,6 +109,13 @@ body {
     font-weight: 400;
 }
 
+/* Separador para modal com dois subtítulos */
+#decorativeSeparator {
+    margin: 10px auto;
+    width: 90%;
+    border: 1px solid black;
+}
+
 /* Container do exibidor de nome do amigo */
 #containerFriendName {
     display: none;
