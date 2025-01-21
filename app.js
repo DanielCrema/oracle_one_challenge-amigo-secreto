@@ -21,6 +21,57 @@ let currentFriendId = -1;
 
 /**
  * 
+ * Lógicas globais de UI/UX
+ * 
+*/
+
+// Adiciona dinamicidade ao jogo
+// engajando o usuário quando um nome é adicionado
+function manageUserEngagementFlow(action) {
+    const documentBody = document.body;
+    const friendsList = document.getElementById('listaAmigos');
+    const drawButton = document.querySelector('.button-draw-action');
+    if (action === 'clear') {
+        // Scroll suave para o topo
+        window.scrollTo({
+            top: 0,
+            // behavior: "smooth",
+        });
+        // Reseta o layout
+        documentBody.style.height = '100vh';
+        friendsList.style.display = 'none';
+        drawButton.style.display = 'none';
+    }
+    if (action === 'start') {
+        // Expande o layout
+        documentBody.style.height = '120vh';
+        friendsList.style.display = 'grid';
+        drawButton.style.display = 'flex';
+        // Scroll suave para o fim da página
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    }
+}
+
+// Adicionar nome com Enter
+const inputFriendName = document.getElementById('amigo');
+const addButton = document.querySelector('.button-add');
+inputFriendName.addEventListener('keyup', (e) => {
+    if (inputFriendName.value !== '' && e.key === 'Enter') {
+        addButton.click();
+    }
+});
+
+// Automatiza o clique no input
+// após validações por modal
+function clickOnInput() {
+    inputFriendName.focus();
+}
+
+/**
+ * 
  * Lógicas globais do modal
  * 
 **/
@@ -35,7 +86,6 @@ const modalSubtitleDiv = document.getElementById('missingField');
 const modalExitButton = document.getElementById('warningExitButton');
 const containerConfirmButtons = document.getElementById('containerConfirmButtons');
 const cancelButton = document.getElementById('cancelButton');
-const inputFriendName = document.getElementById('amigo');
 
 // Lógica para gerenciar os botões de fechar o modal
 function setmodalExitButtonEventListener() {
@@ -155,17 +205,23 @@ function validateFriendName(friendName) {
                 displayModal('noSubtitle', 'singleButton', {
                     title: 'Este nome já foi adicionado à lista',
                 });
+                manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
+
             }
         } else {
             displayModal('withSubtitle', 'singleButton', {
-                title: `O nome <span style="font-weight: 900">"${friendName}"</span> não é um nome válido`,
+                title: `<p style="font-weight: 400">O nome <span style="font-weight: 900">"${friendName}"</span> não é um nome válido</p>`,
                 subtitle: `Certifique-se de incluir apenas letras nos nomes`
             });
+            manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
+
         }
     } else {
         displayModal('noSubtitle', 'singleButton', {
             title: 'Por favor, insira um nome',
         });
+        manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
+
     }
 
     return isValid
@@ -191,12 +247,15 @@ function addToList(friendItem) {
     if (friendsArray.length === 0) {
         const titleFriendsList = document.getElementById('tituloListaAmigos');
         titleFriendsList.style.display = 'block';
+        manageUserEngagementFlow('start');
     }
     friendsArray.push(friendItem);
 
     /**
      * Lógica de manipulação do DOM
     */
+
+    // Configura o elemento do novo amigo
     const friendsList = document.getElementById('listaAmigos');
     const li = friendsList.appendChild(document.createElement("li"));
     li.classList.add('listItem');
@@ -229,6 +288,7 @@ function deleteItem(id) {
         // Apaga o título da lista caso o último elemento seja apagado
         const titleFriendsList = document.getElementById('tituloListaAmigos');
         titleFriendsList.style.display = 'none';
+        manageUserEngagementFlow('clear');
     }
 
     // Elimina o nome a ser apagado e gera um novo array
@@ -249,13 +309,6 @@ function deleteItem(id) {
         addToList(friendItem);
     });
 }
-
-// Adicionar nome com Enter
-inputFriendName.addEventListener('keyup', (e) => {
-    if (inputFriendName.value !== '' && e.key === 'Enter') {
-        addFriend();
-    }
-});
 
 
 /**
@@ -587,7 +640,7 @@ function restart() {
     friendsArray = [];
     sortedIds = [];
     currentFriendId = -1;
-    
+
     // Reabilita o input e o botão de adicionar
     toggleDisplay('input', 'enable');
     toggleDisplay('addButton', 'enable');
@@ -597,6 +650,7 @@ function restart() {
     listaAmigos.innerHTML = '';
     const titleFriendsList = document.getElementById('tituloListaAmigos');
     titleFriendsList.style.display = 'none';
+    manageUserEngagementFlow('clear');
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
