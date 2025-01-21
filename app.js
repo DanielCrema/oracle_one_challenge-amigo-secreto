@@ -338,7 +338,6 @@ function addFriend() {
     const friendName = inputFriendName.value.trim();
     if (validateFriendName(friendName)) {
         currentFriendId++
-        updateFriendCounter(currentFriendId + 1);
         const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
         const friendItem = {
             id: currentFriendId,
@@ -389,6 +388,9 @@ function addToList(friendItem) {
     // Monitora e atualiza a largura dos elementos
     const itemWidth = li.offsetWidth;
     manageFriendsListItensMinWidth(itemWidth);
+
+    // Atualiza o contador de amigos
+    updateFriendCounter(currentFriendId + 1);
 }
 
 // Função para apagar um nome da lista
