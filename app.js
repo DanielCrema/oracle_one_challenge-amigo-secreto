@@ -345,29 +345,39 @@ function validateFriendName(friendName) {
     return isValid
 }
 
-// Função 'onclick' do botão de adicionar nome
-function addFriend() {
-    const friendName = inputFriendName.value.trim();
-    if (validateFriendName(friendName)) {
-        currentFriendId++
-        const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
-        const friendItem = {
-            id: currentFriendId,
-            friendName: normalizedFriendName
-        }
-        addToList(friendItem);
-        inputFriendName.value = '';
+// Função para reorganizar os amigos no array e no DOM
+function reorganizeFriends(arr) {
+    // Função aninhada para ordenar o array alfabeticamente
+    function sortArray(arr) {
+        // Extrai e ordena os nomes
+        const sortedNames = arr.map(friend => friend.friendName).sort();
+
+        // Reconstrói o array
+        const orderedArray = sortedNames.map((name, index) => ({
+            id: index,
+            friendName: name
+        }));
+
+        return orderedArray;
     }
+
+    // Ordena o array
+    arr = sortArray(arr);
+
+    // Limpa tudo e adiciona os amigos novamente 
+    const friendsList = document.getElementById('listaAmigos');
+    friendsList.innerHTML = '';
+    friendsArray = [];
+    currentFriendId = -1
+
+    arr.forEach((friendItem) => {
+        friendsArray.push(friendItem);
+        addToList(friendItem);
+    });
 }
 
 // Função para adicionar nomes na lista de amigos
 function addToList(friendItem) {
-    if (friendsArray.length === 0) {
-        manageUserEngagementFlow('start');
-        updateFriendCounter();
-    }
-    friendsArray.push(friendItem);
-
     /**
      * Lógica de manipulação do DOM
     */
@@ -390,8 +400,8 @@ function addToList(friendItem) {
     imgButtonDestructive.setAttribute("src", "/assets/red-trash-can-icon.png");
     imgButtonDestructive.setAttribute("alt", `Excluir ${friendItem.friendName}`);
     imgButtonDestructive.addEventListener('click', () => {
-        const itemId = li.id.match(/\d/)[0]
-        deleteItem(itemId);
+        const itemId = friendItem.id;
+        deleteFriend(itemId);
     })
 
     // Configura o texto do <p>
@@ -406,8 +416,38 @@ function addToList(friendItem) {
     updateFriendCounter();
 }
 
+// Função 'onclick' do botão de adicionar nome
+function addFriend() {
+    const friendName = inputFriendName.value.trim();
+    if (validateFriendName(friendName)) {
+        // Incrementa o id
+        currentFriendId++
+
+        // Normaliza o nome
+        const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
+
+        // Constrói o objeto
+        const friendItem = {
+            id: currentFriendId,
+            friendName: normalizedFriendName
+        }
+
+        // Adiciona ao array
+        if (friendsArray.length === 0) {
+            manageUserEngagementFlow('start');
+            updateFriendCounter();
+        }
+        friendsArray.push(friendItem);
+
+        // Organiza o array e a apresentação no DOM
+        reorganizeFriends(friendsArray);
+
+        inputFriendName.value = '';
+    }
+}
+
 // Função para apagar um nome da lista
-function deleteItem(id) {
+function deleteFriend(id) {
     if (friendsArray.length === 1) {
         manageUserEngagementFlow('clear');
         updateFriendCounter();
@@ -422,14 +462,11 @@ function deleteItem(id) {
             return friendItem;
         });
 
-    // Limpa tudo e adiciona os amigos novamente 
-    const friendsList = document.getElementById('listaAmigos');
-    friendsList.innerHTML = '';
-    friendsArray = [];
-    currentFriendId = -1
-    newFriendsArray.forEach((friendItem) => {
-        addToList(friendItem);
-    });
+    // Ordena os nomes e reconstrói o array e o HTML
+    reorganizeFriends(newFriendsArray);
+
+    // Retorna ao input
+    inputFriendName.focus();
 }
 
 
