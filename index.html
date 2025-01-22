@@ -45,20 +45,26 @@
             </div>
         </div>
 
-        <section class="input-section">
-            <div id="containerTitle">
-                <h2 class="section-title">Digite um nome para começar</h2>
-                <div id="containerContadorDeAmigos">
-                    <p>Amigos:</p>
-                    <p id="contadorDeAmigos"></p>
+        <section class="containerDrawInterface">
+            <div id="containerInput">
+                <div id="containerTitle">
+                    <h2 class="section-title">Digite um nome para começar</h2>
+                    <div id="containerContadorDeAmigos">
+                        <p>Amigos:</p>
+                        <p id="contadorDeAmigos"></p>
+                    </div>
                 </div>
-            </div>
-            <div class="input-wrapper">
-                <input type="text" id="amigo" class="input-name" placeholder="Digite um nome">
-                <button class="button-add" onclick="addFriend()">Adicionar</button>
+                <div class="input-wrapper">
+                    <input type="text" id="amigo" class="input-name" placeholder="Digite um nome">
+                    <button class="button-add" onclick="addFriend()">Adicionar</button>
+                </div>
             </div>
 
             <div id="containerListaAmigos">
+                <div id="containerLimparLista">
+                    <p id="labelLimparLista">Limpar Lista</p>
+                    <img id="limparLista" src="/assets/red-trash-can-icon.png" alt="Limpar lista" class="src">
+                </div>
                 <p id="tituloListaAmigos">Amigos Adicionados</p>
                 <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
             </div>

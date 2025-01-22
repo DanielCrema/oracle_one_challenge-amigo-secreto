@@ -104,34 +104,42 @@ function updateFriendCounter() {
 // Atualizador da mensagem principal do jogo
 function updateTitle(parameter) {
     const gameTitle = document.querySelector('.section-title');
+    const containerTitle = document.getElementById('containerTitle');
     if (parameter === 'addingStart') {
+        containerTitle.style.display = 'grid';
         gameTitle.innerText = 'Adicione seus amigos'
     } else if (parameter === 'drawStart') {
         gameTitle.innerText = 'O sorteio começou'
     } else if (parameter === 'drawEnd') {
         gameTitle.innerText = 'Fim do sorteio';
     } else if (parameter === 'clear') {
+        containerTitle.style.display = 'block';
         gameTitle.innerText = 'Digite um nome para começar';
-
     }
 }
 
 // Gerencia a largura dos itens da lista para
 // uma disposição geometricamente harmoniosa
 function manageFriendsListItensMinWidth(width) {
-    const list = document.getElementById('listaAmigos');
-    const listItems = document.querySelectorAll('.listItem');
-    if (width > listItensCurrentWidth) {
-        // Calcula a largura do pai
-        const listWidth = list.clientWidth;
+    // Avalia se o design é responsivo
+    const viewportWidth = window.innerWidth;
+    const isResponsive = viewportWidth < 768 ? true : false;
 
-        // Calculate the item width based on the parent width and number of items
-        const itemWidth = Math.floor(listWidth / Math.ceil(Math.sqrt(listItems.length)));
-
-        // Update the min-width for all list items
-        listItems.forEach((item) => {
-            item.style.minWidth = `${itemWidth}px`;
-        });
+    if (!isResponsive) {
+        const list = document.getElementById('listaAmigos');
+        const listItems = document.querySelectorAll('.listItem');
+        if (width > listItensCurrentWidth) {
+            // Calcula a largura do pai
+            const listWidth = list.clientWidth;
+    
+            // Calculate the item width based on the parent width and number of items
+            const itemWidth = Math.floor(listWidth / Math.ceil(Math.sqrt(listItems.length)));
+    
+            // Update the min-width for all list items
+            listItems.forEach((item) => {
+                item.style.minWidth = `${itemWidth}px`;
+            });
+        }
     }
 };
 
@@ -468,6 +476,18 @@ function deleteFriend(id) {
     // Retorna ao input
     inputFriendName.focus();
 }
+
+// Função para limpar a lista de amigos
+const clearListButton = document.getElementById('limparLista');
+function clearList() {
+    displayModal('withSubtitle', 'twoButtons', {
+        title: `Tem certeza que deseja limpar?`,
+        subtitle: `Clicando em confirmar você perderá os nomes já listados`
+    });
+
+    manageModalButtonTemporaryEventListeners(restart)
+}
+clearListButton.addEventListener('click', () => clearList());
 
 
 /**
@@ -827,6 +847,10 @@ function restart() {
     listaAmigos.innerHTML = '';
     manageUserEngagementFlow('clear');
 
+    // Assegura o ocultamento do modal
+    backdrop.style.display = 'none';
+    containerModal.style.display = 'none';
+
     // Reinicializa os botões inferiores
     resetDrawButtons();
 }
@@ -851,6 +875,10 @@ function drawAgain() {
 
     // Redefine o título
     updateTitle('addingStart');
+
+    // Assegura o ocultamento do modal
+    backdrop.style.display = 'none';
+    containerModal.style.display = 'none'
 
     // Reinicializa os botões inferiores
     resetDrawButtons();
