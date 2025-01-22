@@ -324,6 +324,25 @@ ul {
     max-width: 100%;
     max-height: 170px;
     overflow-y: auto;
+    padding-bottom: 10px;
+}
+
+#listaAmigos::-webkit-scrollbar {
+    height: 12px;
+}
+
+#listaAmigos::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+#listaAmigos::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+#listaAmigos::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 .listItem {
@@ -475,9 +494,6 @@ ul {
         font-size: 16px;
     }
 
-    /* #containerListaAmigos {
-    } */
-
     #containerLimparLista {
         left: -5%;
         font-size: 8px;
@@ -498,6 +514,10 @@ ul {
         height: fit-content;
         grid-template-columns: 1fr 1fr;
         gap: 5px 10px;
+    }
+
+    #listaAmigos::-webkit-scrollbar {
+        height: 10px;
     }
 
     .buttonDestructive {
