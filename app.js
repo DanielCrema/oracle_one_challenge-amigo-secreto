@@ -432,7 +432,7 @@ function addFriend() {
         currentFriendId++
 
         // Normaliza o nome
-        const normalizedFriendName = friendName[0].toUpperCase() + friendName.substring(1);
+        const normalizedFriendName = friendName.replace(/\b[a-z]/g, (match) => match.toUpperCase());
 
         // Constrói o objeto
         const friendItem = {
