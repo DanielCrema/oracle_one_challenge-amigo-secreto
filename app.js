@@ -515,6 +515,7 @@ function addFriend() {
         reorganizeFriends(friendsArray);
 
         inputFriendName.value = '';
+        clickOnInput();
     }
 }
 
@@ -536,9 +537,6 @@ function deleteFriend(id) {
 
     // Ordena os nomes e reconstrói o array e o HTML
     reorganizeFriends(newFriendsArray);
-
-    // Retorna ao input
-    clickOnInput();
 }
 
 // Função para limpar a lista de amigos
