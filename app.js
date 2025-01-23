@@ -538,20 +538,29 @@ function deleteFriend(id) {
     reorganizeFriends(newFriendsArray);
 
     // Retorna ao input
-    inputFriendName.focus();
+    clickOnInput();
 }
 
 // Função para limpar a lista de amigos
 const clearListButton = document.getElementById('limparLista');
-function clearList() {
+function confirmClearList() {
+    const containerFriendName = document.getElementById('containerFriendName');
+    containerFriendName.style.display = 'none';
     displayModal('withSubtitle', 'twoButtons', {
         title: `Tem certeza que deseja limpar?`,
         subtitle: `Clicando em confirmar você perderá os nomes já listados`
     });
 
-    manageModalButtonTemporaryEventListeners(restart)
+    // Configura o listener do botão confirm do modal para limpar a lista
+    function handleConfirm() {
+        restart();
+        backdrop.style.display = 'none';
+        containerModal.style.display = 'none';
+    }
+
+    manageModalButtonTemporaryEventListeners(handleConfirm);
 }
-clearListButton.addEventListener('click', () => clearList());
+clearListButton.addEventListener('click', () => confirmClearList());
 
 
 /**
