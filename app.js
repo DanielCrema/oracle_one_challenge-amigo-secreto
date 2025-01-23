@@ -428,13 +428,13 @@ function addToList(friendItem) {
     // Cria ícone cosmético
     const imgRightArrow = li.appendChild(document.createElement("img"));
     imgRightArrow.classList.add('iconRightArrow');
-    imgRightArrow.setAttribute("src", "/assets/right-arrow.png");
+    imgRightArrow.setAttribute("src", "./assets/right-arrow.png");
     imgRightArrow.setAttribute("alt", `${friendItem.friendName}`);
 
     // Cria e configura o botão destrutivo
     const imgButtonDestructive = li.appendChild(document.createElement("img"));
     imgButtonDestructive.classList.add('buttonDestructive');
-    imgButtonDestructive.setAttribute("src", "/assets/red-trash-can-icon.png");
+    imgButtonDestructive.setAttribute("src", "./assets/red-trash-can-icon.png");
     imgButtonDestructive.setAttribute("alt", `Excluir ${friendItem.friendName}`);
     imgButtonDestructive.addEventListener('click', () => {
         const itemId = friendItem.id;
