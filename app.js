@@ -314,7 +314,7 @@ function validateFriendName(friendName) {
 
     let isValid = false;
     if (friendName !== '') {
-        const validationRegex = /^[a-zà-öø-ÿ]+([ '-][a-zà-öø-ÿ]+)*$/i;
+        const validationRegex = /^[a-zà-öø-ÿ]+([ '-][.a-zà-öø-ÿ]+)*$/i;
         if (validationRegex.test(friendName)) {
             if (!verifyNamesInArray(friendsArray, friendName)) {
                 isValid = true;
@@ -323,13 +323,26 @@ function validateFriendName(friendName) {
                     title: 'Este nome já foi adicionado à lista',
                 });
                 manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
-
             }
         } else {
+            // Configura e exibe o modal para os casos onde os caracteres permitidos
+            // ' . ', ' ' ' e ' - ' estão presentes porém no lugar errado
+            // 
+            // Exemplos válidos: " João P. ", " D'Angelo ", " Van-Heuten "
+            // Exemplos inválidos: " 'dan ", " -joão ", "jos.é" 
+            if (/['-.]/.test(friendName)) {
+                displayModal('noSubtitle', 'singleButton', {
+                    title: `<p style="font-weight: 400">O nome <span style="font-weight: 900">"${friendName}"</span> não é um nome válido</p>`,
+                });
+                manageModalButtonTemporaryEventListeners(clickOnInput, 'singleButton');
+
+                return isValid
+            }
+
             // Captura os caracteres inválidos
-            const invalidCharsRegex = /[^a-zà-öø-ÿ '-]/gi
+            const invalidCharsRegex = /[^a-zà-öø-ÿ '-.]/gi
             const matches = friendName.match(invalidCharsRegex);
-            const invalidCharsArray = [...new Set(matches)];
+            const invalidCharsArray = [...new Set(matches)].filter((char) => /[a-zà-öø-ÿ]/.test(char) === false);
 
             /**
              * 
