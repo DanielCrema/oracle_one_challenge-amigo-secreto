@@ -141,6 +141,46 @@ inputFriendName.addEventListener('keyup', (e) => {
     }
 });
 
+// Bloqueia o input para nomes maiores que 20 caracteres
+// Gerenciador de estado
+let maxCharCountStatementVisible = false;
+function validateNameLength() {
+    inputFriendName.addEventListener('keydown', (e) => {
+        const maxCharCountStatement = document.getElementById('maxCharCountStatement');
+        if (inputFriendName.value.length === 20) {
+            // Configura o botão delete para remover a mensagem
+            function removeMaxCharCountStatementFromDelete() {
+                inputFriendName.addEventListener('keyup', (e) => {
+                    if (e.key === 'Delete' && inputFriendName.value.length < 20) {
+                        maxCharCountStatementVisible = false;
+                        maxCharCountStatement.style.color = 'transparent';
+                    }
+                })
+            }
+
+            // Configura o botão backspace para remover a mensagem
+            function removeMaxCharCountStatementFromBackSpace() {
+                maxCharCountStatement.style.color = 'transparent';
+            }
+
+            if (e.key === 'Backspace' && maxCharCountStatementVisible) {
+                maxCharCountStatementVisible = false;
+                removeMaxCharCountStatementFromBackSpace(maxCharCountStatement);
+            } else if (e.key !== 'Delete') {
+                removeMaxCharCountStatementFromDelete()
+                maxCharCountStatementVisible = true;
+                maxCharCountStatement.style.color = 'rgb(210, 0, 0)';
+                e.preventDefault();
+            }
+        }
+        if (maxCharCountStatementVisible) {
+            inputFriendName.removeEventListener('keyup', removeMaxCharCountStatementFromDelete)
+        }
+    });
+}
+validateNameLength();
+
+
 // Automatiza o clique no input
 // após validações por modal
 function clickOnInput() {

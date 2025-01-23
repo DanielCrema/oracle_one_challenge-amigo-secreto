@@ -457,6 +457,14 @@ ul {
     border-radius: 12px;
 }
 
+#maxCharCountStatement {
+    color: transparent;
+    padding: 4px 0 0 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+}
+
 #friendName {
     font-family: "Inter", sans-serif;
     /* font-weight: 700; */
