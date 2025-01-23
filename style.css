@@ -52,12 +52,30 @@ body::-webkit-scrollbar {
 
 /* Banner */
 .header-banner {
-    padding-top: 70px;
+    /* position: relative; */
+    /* padding-top: 70px; */
+    min-height: 300px;
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     font-size: 20px;
+}
+
+#containerHeaderContent {
+    /* background-color: red; */
+    height: 100px;
+    width: 80%;
+    min-width: 320px;
+    max-width: 600px;
+    position: relative;
+}
+
+#headerImage {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(30%, 10%);
 }
 
 /* Backdrop do Modal */
@@ -197,7 +215,10 @@ body::-webkit-scrollbar {
 
 /* Títulos */
 .main-title {
-    padding: 0 6%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-30%, -20%);
     font-family: "Merriweather", serif;
     font-weight: 900;
     font-style: italic;
@@ -218,7 +239,7 @@ body::-webkit-scrollbar {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .input-name {
@@ -420,6 +441,7 @@ ul {
 
 #containerInput {
     width: 90%;
+    min-width: 320px;
     max-width: 600px;
 }
 
@@ -491,12 +513,13 @@ ul {
 }
 
 @media (max-width: 768px) {
-    .header-banner {
-        padding-top: 120px;
-        font-size: 12px;
+    .main-title {
+        font-size: 18px;
+        transform: translate(15%, 100%);
     }
 
-    .header-banner img {
+    #headerImage {
+        transform: translate(0, 10%);
         width: 200px;
     }
 
@@ -616,6 +639,16 @@ ul {
 }
 
 @media(min-width: 500px) and (max-width: 768px) {
+    .main-title {
+        transform: translate(-10%, -30%);
+        font-size: 26px;
+    }
+
+    #headerImage {
+        width: 320px;
+        transform: translate(10%, 10%);
+    }
+    
     #containerLimparLista {
         left: 0;
     }
@@ -637,6 +670,18 @@ ul {
 
     .button-draw img {
         width: 20px;
+    }
+}
+
+@media(min-width: 768px) and (max-width: 870px) {
+    .main-title {
+        font-size: 36px;
+        transform: translate(0%, -20%);
+    }
+
+    #headerImage {
+        width: 350px;
+        transform: translate(20%, 10%);
     }
 }
 
