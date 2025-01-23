@@ -328,7 +328,8 @@ function validateFriendName(friendName) {
         } else {
             // Captura os caracteres inválidos
             const invalidCharsRegex = /[^a-zà-öø-ÿ '-]/gi
-            const invalidCharsArray = friendName.match(invalidCharsRegex);
+            const matches = friendName.match(invalidCharsRegex);
+            const invalidCharsArray = [...new Set(matches)];
 
             /**
              * 
