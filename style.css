@@ -327,6 +327,10 @@ ul {
     padding-bottom: 10px;
 }
 
+#listaAmigos > * {
+    overflow: visible;
+}
+
 #listaAmigos::-webkit-scrollbar {
     height: 12px;
 }
@@ -349,6 +353,8 @@ ul {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 70px;
+    max-width: 120px;
 }
 
 .buttonDestructive {
@@ -397,7 +403,7 @@ ul {
 
 #limparLista {
     height: 22px;
-    width: 20px;
+    width: 19px;
     cursor: pointer;
 }
 

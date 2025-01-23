@@ -34,7 +34,7 @@ let scrollAtTop = true;
 // 
 // Inicializa em 0 e é usado como parâmetro para
 // harmonizar a largura dos elementos do grid
-let listItensCurrentWidth = 0;
+let listItensCurrentWidth = 70;
 
 
 /**
@@ -97,8 +97,9 @@ function updateFriendCounter() {
     const listItens = document.querySelectorAll('.listItem');
     const listLength = listItens.length;
 
-    // Incrementa o valor no HTML
+    // Incrementa o valor no HTML e no contador de ID atual
     friendCounter.innerHTML = listLength.toString();
+    currentFriendId = listLength;
 }
 
 // Atualizador da mensagem principal do jogo
@@ -120,26 +121,14 @@ function updateTitle(parameter) {
 
 // Gerencia a largura dos itens da lista para
 // uma disposição geometricamente harmoniosa
-function manageFriendsListItensMinWidth(width) {
-    // Avalia se o design é responsivo
-    const viewportWidth = window.innerWidth;
-    const isResponsive = viewportWidth < 768 ? true : false;
-
-    if (!isResponsive) {
-        const list = document.getElementById('listaAmigos');
-        const listItems = document.querySelectorAll('.listItem');
-        if (width > listItensCurrentWidth) {
-            // Calcula a largura do pai
-            const listWidth = list.clientWidth;
-    
-            // Calculate the item width based on the parent width and number of items
-            const itemWidth = Math.floor(listWidth / Math.ceil(Math.sqrt(listItems.length)));
-    
-            // Update the min-width for all list items
-            listItems.forEach((item) => {
-                item.style.minWidth = `${itemWidth}px`;
-            });
-        }
+function manageFriendsListItensMinWidth(width, currentMinWidth) {
+    // Verifica a necessidade de modificar
+    if (width > listItensCurrentWidth && width <= 125) {
+        // Atualiza o min-width para todos os itens da lista
+        const listItens = document.querySelectorAll('.listItem');
+        listItens.forEach((item) => {
+            item.style.minWidth = `${width}px`;
+        });
     }
 };
 
@@ -418,7 +407,8 @@ function addToList(friendItem) {
 
     // Monitora e atualiza a largura dos elementos
     const itemWidth = li.offsetWidth;
-    manageFriendsListItensMinWidth(itemWidth);
+    const currentMinWidth = parseInt(getComputedStyle(li).minWidth.match(/\d+/));
+    manageFriendsListItensMinWidth(itemWidth, currentMinWidth);
 
     // Atualiza o contador de amigos
     updateFriendCounter();
@@ -428,9 +418,6 @@ function addToList(friendItem) {
 function addFriend() {
     const friendName = inputFriendName.value.trim();
     if (validateFriendName(friendName)) {
-        // Incrementa o id
-        currentFriendId++
-
         // Normaliza o nome
         const normalizedFriendName = friendName.replace(/\b[a-z]/g, (match) => match.toUpperCase());
 
