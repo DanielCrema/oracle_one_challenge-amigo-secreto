@@ -148,6 +148,14 @@ function validateNameLength() {
     inputFriendName.addEventListener('keydown', (e) => {
         const maxCharCountStatement = document.getElementById('maxCharCountStatement');
         if (inputFriendName.value.length === 20) {
+            console.log("oi")
+            // Configura o layout da mensagem
+            if (e.key !== 'Delete' && e.key !== 'Backspace') {
+                maxCharCountStatementVisible = true;
+                maxCharCountStatement.style.color = 'rgb(210, 0, 0)';
+                e.preventDefault();
+            }
+
             // Configura o botão delete para remover a mensagem
             function removeMaxCharCountStatementFromDelete() {
                 inputFriendName.addEventListener('keyup', (e) => {
@@ -159,22 +167,37 @@ function validateNameLength() {
             }
 
             // Configura o botão backspace para remover a mensagem
-            function removeMaxCharCountStatementFromBackSpace() {
-                maxCharCountStatement.style.color = 'transparent';
+            function removeMaxCharCountStatementFromBackspace() {
+                inputFriendName.addEventListener('keyup', (e) => {
+                    if (e.key === 'Backspace' && inputFriendName.value.length < 20) {
+                        maxCharCountStatementVisible = false;
+                        maxCharCountStatement.style.color = 'transparent';
+                    }
+                })
             }
 
-            if (e.key === 'Backspace' && maxCharCountStatementVisible) {
-                maxCharCountStatementVisible = false;
-                removeMaxCharCountStatementFromBackSpace(maxCharCountStatement);
-            } else if (e.key !== 'Delete') {
+            // Configura o botão enter para remover a mensagem
+            function removeMaxCharCountStatementFromEnter() {
+                inputFriendName.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter' && inputFriendName.value.length < 20) {
+                        maxCharCountStatementVisible = false;
+                        maxCharCountStatement.style.color = 'transparent';
+                    }
+                })
+            }
+
+            // Chama as funções
+            if (maxCharCountStatementVisible) {
                 removeMaxCharCountStatementFromDelete()
-                maxCharCountStatementVisible = true;
-                maxCharCountStatement.style.color = 'rgb(210, 0, 0)';
-                e.preventDefault();
+                removeMaxCharCountStatementFromBackspace()
+                removeMaxCharCountStatementFromEnter()
             }
         }
-        if (maxCharCountStatementVisible) {
+        // Remove os listeners para evitar bugs por listener residual
+        if (!maxCharCountStatementVisible) {
             inputFriendName.removeEventListener('keyup', removeMaxCharCountStatementFromDelete)
+            inputFriendName.removeEventListener('keyup', removeMaxCharCountStatementFromBackspace)
+            inputFriendName.removeEventListener('keyup', removeMaxCharCountStatementFromEnter)
         }
     });
 }
