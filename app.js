@@ -144,10 +144,16 @@ inputFriendName.addEventListener('keyup', (e) => {
 // Bloqueia o input para nomes maiores que 20 caracteres
 // Gerenciador de estado
 let maxCharCountStatementVisible = false;
+let twentyCharsNameContent = ''
 function validateNameLength() {
-    inputFriendName.addEventListener('keydown', (e) => {
-        const maxCharCountStatement = document.getElementById('maxCharCountStatement');
+    inputFriendName.addEventListener('input', (e) => {
         if (inputFriendName.value.length === 20) {
+            twentyCharsNameContent = inputFriendName.value;
+        }
+        if (inputFriendName.value.length > 20) {
+        // Trim the input to 20 characters
+        inputFriendName.value = twentyCharsNameContent;
+        const maxCharCountStatement = document.getElementById('maxCharCountStatement');
             console.log("oi")
             // Configura o layout da mensagem
             if (e.key !== 'Delete' && e.key !== 'Backspace') {
@@ -158,8 +164,8 @@ function validateNameLength() {
 
             // Configura o botão delete para remover a mensagem
             function removeMaxCharCountStatementFromDelete() {
-                inputFriendName.addEventListener('keyup', (e) => {
-                    if (e.key === 'Delete' && inputFriendName.value.length < 20) {
+                inputFriendName.addEventListener('keydown', (e) => {
+                    if (e.key === 'Delete' && inputFriendName.value.length <= 20) {
                         maxCharCountStatementVisible = false;
                         maxCharCountStatement.style.color = 'transparent';
                     }
@@ -168,8 +174,8 @@ function validateNameLength() {
 
             // Configura o botão backspace para remover a mensagem
             function removeMaxCharCountStatementFromBackspace() {
-                inputFriendName.addEventListener('keyup', (e) => {
-                    if (e.key === 'Backspace' && inputFriendName.value.length < 20) {
+                inputFriendName.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && inputFriendName.value.length <= 20) {
                         maxCharCountStatementVisible = false;
                         maxCharCountStatement.style.color = 'transparent';
                     }
@@ -179,7 +185,7 @@ function validateNameLength() {
             // Configura o botão enter para remover a mensagem
             function removeMaxCharCountStatementFromEnter() {
                 inputFriendName.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter' && inputFriendName.value.length < 20) {
+                    if (e.key === 'Enter') {
                         maxCharCountStatementVisible = false;
                         maxCharCountStatement.style.color = 'transparent';
                     }
