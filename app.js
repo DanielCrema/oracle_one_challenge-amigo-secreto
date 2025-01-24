@@ -48,11 +48,16 @@ let listItensCurrentWidth = 70;
 async function manageUserEngagementFlow(action) {
     // Função bloqueadora de scroll
     function blockScroll() {
-        window.scrollTo(0, document.body.scrollHeight);
+        if (scrollAtTop) {
+            window.scrollTo(0, 0);
+        } else {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
     }
+    window.addEventListener('scroll', blockScroll);
+    window.addEventListener('load', () => window.scrollTo(0, 0));
 
     // Capturando os elementos a serem manipulados
-    const documentBody = document.body;
     const containerFriendsList = document.getElementById('containerListaAmigos');
     const containerDrawButtons = document.querySelector('.button-container');
     const containerFriendCounter = document.getElementById('containerContadorDeAmigos');
@@ -61,7 +66,6 @@ async function manageUserEngagementFlow(action) {
     if (action === 'clear') {
         // Gerencia o estado do scroll
         scrollAtTop = true;
-        window.removeEventListener('scroll', blockScroll);
 
         // Scroll suave para o topo
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -72,11 +76,13 @@ async function manageUserEngagementFlow(action) {
         containerFriendsList.style.display = 'none';
         containerDrawButtons.style.display = 'none';
         await new Promise(resolve => setTimeout(resolve, 100));
-        documentBody.style.height = '100vh';
+        blockScroll();
     }
     if (action === 'start') {
+        // Gerencia o estado do scroll
+        scrollAtTop = false;
+
         // Expande o layout
-        documentBody.style.height = '120vh';
         updateTitle('addingStart');
         containerFriendCounter.style.display = 'flex';
         containerFriendsList.style.display = 'flex';
@@ -84,10 +90,8 @@ async function manageUserEngagementFlow(action) {
 
         // Scroll suave para o fim da página
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-
-        // Gerencia o estado do scroll
-        scrollAtTop = false;
-        window.addEventListener('scroll', blockScroll);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        blockScroll();
     }
 }
 
@@ -151,10 +155,9 @@ function validateNameLength() {
             twentyCharsNameContent = inputFriendName.value;
         }
         if (inputFriendName.value.length > 20) {
-        // Trim the input to 20 characters
-        inputFriendName.value = twentyCharsNameContent;
-        const maxCharCountStatement = document.getElementById('maxCharCountStatement');
-            console.log("oi")
+            // Trim the input to 20 characters
+            inputFriendName.value = twentyCharsNameContent;
+            const maxCharCountStatement = document.getElementById('maxCharCountStatement');
             // Configura o layout da mensagem
             if (e.key !== 'Delete' && e.key !== 'Backspace') {
                 maxCharCountStatementVisible = true;
