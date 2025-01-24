@@ -43,9 +43,27 @@ let listItensCurrentWidth = 70;
  * 
 */
 
+// Configura a UI inicial para mobile
+// 
+// Essa funcionalidade visa informar o usuário da existência do botão
+// posto que o teclado do mobile o oculta quando é adicionado
+// um nome, o que pode confundir o usuário
+const isComputer = window.innerWidth > 768 ? true : false;
+const buttonContainer = document.querySelector('.button-container');
+if (!isComputer) {
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.padding = '80px 0 0';
+}
+
 // Adiciona dinamicidade ao jogo
 // engajando o usuário quando um nome é adicionado
 async function manageUserEngagementFlow(action) {
+    // Reseta o UI do mobile, removendo o botão
+    if (!isComputer) {
+        buttonContainer.style.display = 'none';
+        buttonContainer.style.padding = '0'; 
+    }
+
     // Função bloqueadora de scroll
     function blockScroll() {
         if (scrollAtTop) {

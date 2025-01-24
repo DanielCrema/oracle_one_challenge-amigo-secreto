@@ -252,6 +252,7 @@ body::-webkit-scrollbar {
 
 .button-container {
     display: none;
+    padding: 0;
     gap: 30px;
     width: fit-content;
     justify-content: center;
