@@ -858,7 +858,7 @@ function manageConfirmations(functionToCall, message) {
 // Gerencia a UX de iniciar novo sorteio
 function confirmRestart() {
     displayModal('withSubtitle', 'twoButtons', {
-        title: `Tem certeza que quer reiniciar?`,
+        title: `Iniciar novo sorteio?`,
         subtitle: `Os nomes do sorteio atual serão perdidos`
     });
 
