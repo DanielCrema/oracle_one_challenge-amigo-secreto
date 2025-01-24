@@ -58,12 +58,6 @@ if (!isComputer) {
 // Adiciona dinamicidade ao jogo
 // engajando o usuário quando um nome é adicionado
 async function manageUserEngagementFlow(action) {
-    // Reseta o UI do mobile, removendo o botão
-    if (!isComputer) {
-        buttonContainer.style.display = 'none';
-        buttonContainer.style.padding = '0'; 
-    }
-
     // Função bloqueadora de scroll
     function blockScroll() {
         if (scrollAtTop) {
@@ -92,7 +86,12 @@ async function manageUserEngagementFlow(action) {
         updateTitle('clear');
         containerFriendCounter.style.display = 'none';
         containerFriendsList.style.display = 'none';
-        containerDrawButtons.style.display = 'none';
+        if (isComputer) {
+            containerDrawButtons.style.display = 'none';
+        } else {
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.padding = '80px 0 0';
+        }
         await new Promise(resolve => setTimeout(resolve, 100));
         blockScroll();
     }
