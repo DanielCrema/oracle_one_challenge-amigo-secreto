@@ -142,9 +142,9 @@ function updateTitle(parameter) {
 
 // Gerencia a largura dos itens da lista para
 // uma disposição geometricamente harmoniosa
-function manageFriendsListItensMinWidth(width, currentMinWidth) {
+function manageFriendsListItensMinWidth(width) {
     // Verifica a necessidade de modificar
-    if (width > listItensCurrentWidth && width <= 125) {
+    if (width > listItensCurrentWidth && width <= 130) {
         // Atualiza o min-width para todos os itens da lista
         const listItens = document.querySelectorAll('.listItem');
         listItens.forEach((item) => {
@@ -511,8 +511,8 @@ function addToList(friendItem) {
 
     // Monitora e atualiza a largura dos elementos
     const itemWidth = li.offsetWidth;
-    const currentMinWidth = parseInt(getComputedStyle(li).minWidth.match(/\d+/));
-    manageFriendsListItensMinWidth(itemWidth, currentMinWidth);
+    console.log(itemWidth)
+    manageFriendsListItensMinWidth(itemWidth);
 
     // Atualiza o contador de amigos
     updateFriendCounter();
@@ -523,7 +523,11 @@ function addFriend() {
     const friendName = inputFriendName.value.trim();
     if (validateFriendName(friendName)) {
         // Normaliza o nome
-        const normalizedFriendName = friendName.toLowerCase().replace(/^[a-z]/, (match) => match.toUpperCase()).replace(/ [a-z]/g, (match) => match.toUpperCase());
+        const normalizedFriendName = friendName.toLowerCase()
+        .replace(/^[a-z]/, (match) => match.toUpperCase())
+        .replace(/ [a-z]/gi, (match) => match.toUpperCase())
+        .replace(/['][A-Z]/gi, (match) => match.toUpperCase())
+        .replace(/[-][A-Z]/gi, (match) => match.toUpperCase());
 
         // Constrói o objeto
         const friendItem = {
