@@ -284,6 +284,7 @@ function displayModal(displayCase, buttonLayout, modalMessage) {
 
     backdrop.style.display = 'block';
     containerModal.style.display = 'flex';
+    inputFriendName.blur();
 }
 
 // Gerador de listeners temporários para os diálogos de confirmação
