@@ -16,7 +16,7 @@ This project features the modern concept of **reactivity** in monolythic **Javas
 
 🎞️ Check the features in action in the video below:
 
-https://github.com/user-attachments/assets/S3f104e54-a97c-4632-9eef-808c48a02770
+[https://github.com/user-attachments/assets/S3f104e54-a97c-4632-9eef-808c48a02770](https://github.com/user-attachments/assets/3f104e54-a97c-4632-9eef-808c48a02770)
 
 ## 🌐 Access
 🔗 [Application](https://danielcrema.github.io/oracle_one_challenge-amigo-secreto/)
