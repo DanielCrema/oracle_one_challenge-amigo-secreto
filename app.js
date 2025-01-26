@@ -143,13 +143,25 @@ function updateTitle(parameter) {
 // Gerencia a largura dos itens da lista para
 // uma disposição geometricamente harmoniosa
 function manageFriendsListItensMinWidth(width) {
+    const listItens = document.querySelectorAll('.listItem');
+    if (width === '70px') {
+        listItensCurrentWidth = 70;
+        // Atualiza o min-width
+        listItens.forEach((item) => {
+            item.style.minWidth = '70px';
+        });
+        return
+    }
+
     // Verifica a necessidade de modificar
-    if (width > listItensCurrentWidth && width <= 130) {
+    if (width <= 135) {
         // Atualiza o min-width para todos os itens da lista
-        const listItens = document.querySelectorAll('.listItem');
         listItens.forEach((item) => {
             item.style.minWidth = `${width}px`;
         });
+
+        // Atualiza a variável
+        listItensCurrentWidth = width;
     }
 };
 
@@ -552,8 +564,7 @@ function addFriend() {
 // Função para apagar um nome da lista
 function deleteFriend(id) {
     if (friendsArray.length === 1) {
-        manageUserEngagementFlow('clear');
-        updateFriendCounter();
+        restart();
     }
 
     // Elimina o nome a ser apagado e gera um novo array
@@ -935,6 +946,7 @@ function restart() {
     if (visibleFriendName) {
         buttonToggleFriendName.click();
     }
+    manageFriendsListItensMinWidth('70px');
 
     // Reinicializa o contador de amigos
     updateFriendCounter();
