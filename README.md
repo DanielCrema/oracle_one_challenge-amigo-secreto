@@ -79,10 +79,13 @@ Then:
 - [**Alura**](https://www.alura.com.br/) for providing the course materials and support.
 - [**Python community**](https://www.python.org/) for providing top-tier open-source libraries and resources.
 
-<a href="https://github.com/DanielCrema/oracle_one-data-science-course/blob/main/certificates/Daniel%20Borges%20Crema%20-%20Program%20ONE%20Certificate.pdf" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/ca28c779441053191ff11710fe24a9e6c23690d6/icons/oracle/oracle-original.svg" alt="logo-oracle" style="width: 70px"/>  
-</a>
-
-<a href="https://github.com/DanielCrema/oracle_one-data-science-course/blob/main/certificates/Daniel%20Borges%20Crema%20-%20Programa%20ONE%20Certificado%20-%20Es.pdf" target="_blank" rel="noreferrer">
-    <img src="https://moebius78.github.io/moebius78-sprint03-aluraONE.github.io/assets/Oracle_Alura.png" alt="logo-oracle-alura-latam" style="width: 115px; background: #FCFCFC; color: #333; padding: 2px 3px"/>  
-</a>
+<p>
+    <a href="https://github.com/DanielCrema/oracle_one-data-science-course/blob/main/certificates/Daniel%20Borges%20Crema%20-%20Program%20ONE%20Certificate.pdf" target="_blank" rel="noreferrer">
+        <img src="https://raw.githubusercontent.com/devicons/devicon/ca28c779441053191ff11710fe24a9e6c23690d6/icons/oracle/oracle-original.svg" alt="logo-oracle" style="width: 70px"/>  
+    </a>
+</p>
+<p>
+    <a href="https://github.com/DanielCrema/oracle_one-data-science-course/blob/main/certificates/Daniel%20Borges%20Crema%20-%20Programa%20ONE%20Certificado%20-%20Es.pdf" target="_blank" rel="noreferrer">
+        <img src="https://moebius78.github.io/moebius78-sprint03-aluraONE.github.io/assets/Oracle_Alura.png" alt="logo-oracle-alura-latam" style="width: 115px; background: #FCFCFC; color: #333; padding: 2px 3px"/>  
+    </a>
+</p>
